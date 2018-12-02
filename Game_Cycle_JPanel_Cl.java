@@ -28,13 +28,17 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
     //y- 	private Sprite_CoreExt_Movable_Collidable_Cl playerMe_Ob = new Sprite_CoreExt_Movable_Collidable_Cl(310,450,1);
     // * Speed was '1'
 	//y- private Sprite_CoreExt_Movable_Collidable_Cl playerMe_Ob = new Sprite_CoreExt_Movable_Collidable_Cl( "/images/ship.jpg", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.80),100,100,2);
-	private Sprite_CoreExt_Movable_Collidable_Cl playerMe_Ob = new Sprite_CoreExt_Movable_Collidable_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.80),100,100,2);
+	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.80),100,100,2);
 
-	List<Integer> playerMe_Input_StringOb_ArrLst = new ArrayList<Integer>();
 
 	//o- private PlayerBots_Cl playerBots_ObsLst;
-	private Sprites_CoreExtLst_Movable_Collidable_Cl playerBots_ObsLst;
-	private Sprites_CoreExtLst_Movable_Collidable_Cl missiles_ObsLst;
+	private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.20),100,100,1);
+
+	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.20),100,100,1);
+
+	private ArrayList<Sprite_Cl> missiles_ObsLst = new ArrayList<Sprite_Cl>();
+
+    List<Integer> playerMe_Input_StringOb_ArrLst = new ArrayList<Integer>();
 
     //	private Long cycle_ProjectileLast_NanoTime = new Long( 0 );
     //	private Long cycle_Last_NanoTime = new Long( 0 );
@@ -51,24 +55,14 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
     private double gameCycle_Period_Sec = 0.0;
     private long gameCycle_DelayFactor_MilliSec = 10; // 5msec too fast, 20msec kindof slow, 10msec seems right
 
-
-	//y- private boolean[] keys;
 	private BufferedImage back;
 
 	public Game_Cycle_JPanel_Cl(JFrame par)
 	{
-		//y- keys = new boolean[5];
-
 		setBackground(Color.black);
-
-		//o-  playerBots_ObsLst = new PlayerBots_Cl(100);
-		playerBots_ObsLst = new Sprites_CoreExtLst_Movable_Collidable_Cl(100);
-
-		missiles_ObsLst = new Sprites_CoreExtLst_Movable_Collidable_Cl();
 
 		this.addKeyListener(this);
 		new Thread(this).start();
-
 		setVisible(true);
 	}
 
@@ -149,7 +143,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         if( ( playerMe_Input_StringOb_ArrLst.contains(Integer.valueOf(KeyEvent.VK_SPACE)) ) && ( gameCycle_Curr_NanoSec - gameCycle_Projectile_Prev_NanoSec > (1.0/gameCycle_Projectile_Per_Sec * Math.pow(10,9)) ) )
 		{
 			//y- missiles_ObsLst.add(new Sprite_CoreExt_Movable_Collidable_Cl(playerMe_Ob.getX()+playerMe_Ob.getWidth()/2-5, playerMe_Ob.getY(), 10, 10, 5));
-            Sprite_CoreExt_Movable_Collidable_Cl missileTemp = new Sprite_CoreExt_Movable_Collidable_Cl("/images/Circle-Green-20x20.png");
+            Sprite_Cl missileTemp = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0);
             //y- missiles_ObsLst.add(new Sprite_CoreExt_Movable_Collidable_Cl( "/images/Circle-Green-20x20.png",playerMe_Ob.getX()+playerMe_Ob.getWidth()/2-10, playerMe_Ob.getY()-10, 5));
             missileTemp.setImageSize(10,10);
             missileTemp.setPos(playerMe_Ob.getX()+ playerMe_Ob.getWidth()/2-(missileTemp.getWidth()/2), playerMe_Ob.getY()-(missileTemp.getHeight()/2));
@@ -180,24 +174,21 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		}
 
 		//y- missiles_ObsLst.move("UP");
-		missiles_ObsLst.move(Direction_Enum.UP);
-		missiles_ObsLst.draw(graphToBack);
+		playerFood_Ob.move(Direction_Enum.UP);
+		playerFood_Ob.draw(graphToBack);
 
 		playerMe_Ob.draw(graphToBack);
 
 		//y- playerBots_ObsLst.move("SIDEWAYS_AND_DOWN");
-		playerBots_ObsLst.move(Direction_Enum.SIDEWAYS_AND_DOWN);
-		playerBots_ObsLst.draw(graphToBack);
+		playerBot_Ob.move(Direction_Enum.SIDEWAYS_AND_DOWN);
+		playerBot_Ob.draw(graphToBack);
 
 		//collision detection
-		missiles_ObsLst.boundaryCheckAndClean();
-		playerBots_ObsLst.boundaryCheckAndClean();
+		//		missiles_ObsLst.boundaryCheckAndClean();
+		//		playerBots_ObsLst.boundaryCheckAndClean();
 
-		//o- playerBots_ObsLst.removeDeadOnes(playerMe_Ob, missiles_ObsLst.getList());
-//		playerBots_ObsLst.collisionCheckAndClean(playerMe_Ob,-1);
-//		playerBots_ObsLst.collisionCheckAndClean(missiles_ObsLst.getList(),+1);
-		playerBots_ObsLst.collisionCheckAndClean(playerMe_Ob,-1);
-		playerBots_ObsLst.collisionCheckAndClean(missiles_ObsLst.getList(),+1);
+		//		playerBots_ObsLst.collisionCheckAndClean(playerMe_Ob,-1);
+		//		playerBots_ObsLst.collisionCheckAndClean(missiles_ObsLst.getList(),+1);
 
 
 		twoDGraph.drawImage(back, null, 0, 0);
