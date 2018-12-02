@@ -152,7 +152,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 			}
 		}
 
-		playerFood_Ob.move(Direction_Enum.UP);
+		playerFood_Ob.move(Direction_Enum.RIGHT);
 		playerFood_Ob.draw(graphToBack);
 
 		playerMe_Ob.draw(graphToBack);
