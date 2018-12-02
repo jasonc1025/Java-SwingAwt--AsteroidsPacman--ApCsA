@@ -7,14 +7,14 @@ import java.awt.*;
 import java.net.URL;
 
 public abstract class Sprite_Core_ClAb {
-	//y- protected Image image_Fl;
-	private Image image_Fl;
-	private int positionX_Fl;
-	private int positionY_Fl;
-	private int imageWidth_Fl;
-	private int imageHeight_Fl;
-	//y- private int speed_Fl;
-	protected int speed_Fl;
+	//y- protected Image image_Fld;
+	private Image image_Fld;
+	private int positionX_Fld;
+	private int positionY_Fld;
+	private int imageWidth_Fld;
+	private int imageHeight_Fld;
+	//y- private int speed_Fld;
+	protected int speed_Fld;
 
 	public Sprite_Core_ClAb()
 	{
@@ -23,18 +23,18 @@ public abstract class Sprite_Core_ClAb {
 
 	public Sprite_Core_ClAb(String imageFileIn, int x, int y, int s)
 	{
-		positionX_Fl = x;
-		positionY_Fl = y;
-		//y- imageWidth_Fl = w;
-		//y- imageHeight_Fl = h;
+		positionX_Fld = x;
+		positionY_Fld = y;
+		//y- imageWidth_Fld = w;
+		//y- imageHeight_Fld = h;
 
 		try
 		{
 			//y- URL url = getClass().getResource("/images/ship.jpg");
 			URL url = getClass().getResource(imageFileIn);
 			setImage(ImageIO.read(url));
-			this.imageWidth_Fl = image_Fl.getWidth( null );
-			this.imageHeight_Fl = image_Fl.getHeight( null );
+			this.imageWidth_Fld = image_Fld.getWidth( null );
+			this.imageHeight_Fld = image_Fld.getHeight( null );
 		}
 		catch(Exception e)
 		{
@@ -45,16 +45,16 @@ public abstract class Sprite_Core_ClAb {
 
 	public Sprite_Core_ClAb(String imageFileIn, int x, int y, int w, int h, int s)
 	{
-		positionX_Fl = x;
-		positionY_Fl = y;
+		positionX_Fld = x;
+		positionY_Fld = y;
 
 		try
 		{
 			//y- URL url = getClass().getResource("/images/ship.jpg");
 			URL url = getClass().getResource(imageFileIn);
 			setImage(ImageIO.read(url));
-			this.imageWidth_Fl = w;
-			this.imageHeight_Fl = h;
+			this.imageWidth_Fld = w;
+			this.imageHeight_Fld = h;
 		}
 		catch(Exception e)
 		{
@@ -65,57 +65,57 @@ public abstract class Sprite_Core_ClAb {
 
 	public void setPos( int x, int y)
 	{
-		positionX_Fl = x;
-		positionY_Fl = y;
+		positionX_Fld = x;
+		positionY_Fld = y;
 	}
 
 	public void setX(int x)
 	{
-		positionX_Fl =x;
+		positionX_Fld =x;
 	}
 
 	public void setY(int y)
 	{
-		positionY_Fl =y;
+		positionY_Fld =y;
 	}
 
 	public int getX()
 	{
-		return positionX_Fl;
+		return positionX_Fld;
 	}
 
 	public int getY()
 	{
-		return positionY_Fl;
+		return positionY_Fld;
 	}
 
 	public void setWidth(int w)
 	{
-		imageWidth_Fl = w;
+		imageWidth_Fld = w;
 	}
 
 	public void setHeight(int h)
 	{
-		imageHeight_Fl = h;
+		imageHeight_Fld = h;
 	}
 
 	public int getWidth()
 	{
-		return imageWidth_Fl;
+		return imageWidth_Fld;
 	}
 
 	public int getHeight()
 	{
-		return imageHeight_Fl;
+		return imageHeight_Fld;
 	}
 
 	//y- public void setSpeed(int s)
 	// {
-	//    speed_Fl=s;
+	//    speed_Fld=s;
 	// }
 	//y- public int getSpeed()
 	// {
-	//    return speed_Fl;
+	//    return speed_Fld;
 	// }
 
 	//y- public abstract void move(String direction);
@@ -127,16 +127,16 @@ public abstract class Sprite_Core_ClAb {
 	}
 
 	public Image getImage() {
-		return image_Fl;
+		return image_Fld;
 	}
 
 	public void setImage(Image imageFlIn) {
-		this.image_Fl = imageFlIn;
-		this.imageWidth_Fl = imageFlIn.getWidth( null );
-		this.imageHeight_Fl = imageFlIn.getHeight( null );
+		this.image_Fld = imageFlIn;
+		this.imageWidth_Fld = imageFlIn.getWidth( null );
+		this.imageHeight_Fld = imageFlIn.getHeight( null );
 	}
 	public void setImageSize(int w, int h) {
-		this.imageWidth_Fl = w;
-		this.imageHeight_Fl = h;
+		this.imageWidth_Fld = w;
+		this.imageHeight_Fld = h;
 	}
 }

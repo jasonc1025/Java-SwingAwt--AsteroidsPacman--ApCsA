@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.sound.sampled.*;
 import javax.swing.JFrame;
@@ -24,25 +25,15 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		UP, DOWN, LEFT, RIGHT, SIDEWAYS_AND_DOWN;
 	}
 
-    //y- too fast and choppy- 		playerMe_Ob = new Sprite_CoreExt_Movable_Collidable_Cl(310,450,5);
-    //y- 	private Sprite_CoreExt_Movable_Collidable_Cl playerMe_Ob = new Sprite_CoreExt_Movable_Collidable_Cl(310,450,1);
-    // * Speed was '1'
-	//y- private Sprite_CoreExt_Movable_Collidable_Cl playerMe_Ob = new Sprite_CoreExt_Movable_Collidable_Cl( "/images/ship.jpg", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.80),100,100,2);
 	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,2,false);
 
-
-	//o- private PlayerBots_Cl playerBots_ObsLst;
 	private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,1,true);
 
 	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,1, true);
 
 	private ArrayList<Sprite_Cl> missiles_ObsLst = new ArrayList<Sprite_Cl>();
 
-    List<Integer> playerMe_Input_StringOb_ArrLst = new ArrayList<Integer>();
-
-    //	private Long cycle_ProjectileLast_NanoTime = new Long( 0 );
-    //	private Long cycle_Last_NanoTime = new Long( 0 );
-    //	private Long cycle_Current_NanoTime = new Long( 0 );
+    List<Integer> playerMe_Input_ObsArrLst = new ArrayList<Integer>();
 
     // * IMPORTANT: 1 sec = 1 x 10^9 nano-sec
     // * IMPORTANT: To avoid 'java: integer number too large' error, require 'l' for 64bit otherwise 32bit default
@@ -60,7 +51,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	public Game_Cycle_JPanel_Cl(JFrame par)
 	{
 		setBackground(Color.black);
-
 		this.addKeyListener(this);
 		new Thread(this).start();
 		setVisible(true);
@@ -73,7 +63,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
 	public void paint( Graphics window )
 	{
-
 		//
 		// * Timer Update
 		//
@@ -85,7 +74,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		gameCycle_Prev_NanoSec = gameCycle_Curr_NanoSec;
 		//y- debug- System.out.println("> "+ gameCycle_Fps_NanoSec.value);
 		//y- System.out.println("> FPS: "+ gameCycle_Fps_NanoSec);
-
 
 		//set up the double buffering to make the game animation nice and smooth
 		Graphics2D twoDGraph = (Graphics2D)window;
@@ -115,23 +103,19 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         graphToBack.drawString( "> SCORE: " + dfTemp.format(Game_Main_JFrame_Cl.SCORE), 50, 150 );
 
 
-		//y- if(keys[0] == true)
-        if( playerMe_Input_StringOb_ArrLst.contains(Integer.valueOf(KeyEvent.VK_LEFT)) )
+        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_LEFT)) )
 		{
 			playerMe_Ob.move(Direction_Enum.LEFT);
 		}
-		//y- if(keys[1] == true)
-        if( playerMe_Input_StringOb_ArrLst.contains(Integer.valueOf(KeyEvent.VK_RIGHT)) )
+        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_RIGHT)) )
         {
 			playerMe_Ob.move(Direction_Enum.RIGHT);
 		}
-		//y- if(keys[2] == true)
-        if( playerMe_Input_StringOb_ArrLst.contains(Integer.valueOf(KeyEvent.VK_UP)) )
+        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_UP)) )
         {
 			playerMe_Ob.move(Direction_Enum.UP);
 		}
-		//y- if(keys[3] == true)
-        if( playerMe_Input_StringOb_ArrLst.contains(Integer.valueOf(KeyEvent.VK_DOWN)) )
+        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_DOWN)) )
         {
 			playerMe_Ob.move(Direction_Enum.DOWN);
 		}
@@ -139,18 +123,13 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         // * IMPORTANT: To avoid 'java: integer number too large' error, require 'l' for 64bit otherwise 32bit default
         // * Projectile at 1/10 sec frequency (or (1/10 * Math.pow(10,9)) nanosec)
         // ** '1.0' required for decimal division
-        //y- if( (keys[4] == true) && ( gameCycle_Curr_NanoSec - gameCycle_Projectile_Prev_NanoSec > (1.0/gameCycle_Projectile_Per_Sec * Math.pow(10,9)) ) )
-        if( ( playerMe_Input_StringOb_ArrLst.contains(Integer.valueOf(KeyEvent.VK_SPACE)) ) && ( gameCycle_Curr_NanoSec - gameCycle_Projectile_Prev_NanoSec > (1.0/gameCycle_Projectile_Per_Sec * Math.pow(10,9)) ) )
+        if( ( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_SPACE)) ) && ( gameCycle_Curr_NanoSec - gameCycle_Projectile_Prev_NanoSec > (1.0/gameCycle_Projectile_Per_Sec * Math.pow(10,9)) ) )
 		{
-			//y- missiles_ObsLst.add(new Sprite_CoreExt_Movable_Collidable_Cl(playerMe_Ob.getX()+playerMe_Ob.getWidth()/2-5, playerMe_Ob.getY(), 10, 10, 5));
             Sprite_Cl missileTemp = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0, true);
-            //y- missiles_ObsLst.add(new Sprite_CoreExt_Movable_Collidable_Cl( "/images/Circle-Green-20x20.png",playerMe_Ob.getX()+playerMe_Ob.getWidth()/2-10, playerMe_Ob.getY()-10, 5));
             missileTemp.setImageSize(10,10);
             missileTemp.setPos(playerMe_Ob.getX()+ playerMe_Ob.getWidth()/2-(missileTemp.getWidth()/2), playerMe_Ob.getY()-(missileTemp.getHeight()/2));
             missileTemp.setSpeed(5);
-            //y missiles_ObsLst.add(new Sprite_CoreExt_Movable_Collidable_Cl( "/images/Circle-Green-20x20.png",playerMe_Ob.getX()+playerMe_Ob.getWidth()/2-10, playerMe_Ob.getY()-10, 5));
             missiles_ObsLst.add(missileTemp);
-			//y turn off to allow continuous fire- keys[4] = false;
             gameCycle_Projectile_Prev_NanoSec = gameCycle_Curr_NanoSec;
 
 			try {
@@ -173,22 +152,39 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 			}
 		}
 
-		//y- missiles_ObsLst.move("UP");
 		playerFood_Ob.move(Direction_Enum.UP);
 		playerFood_Ob.draw(graphToBack);
 
 		playerMe_Ob.draw(graphToBack);
 
-		//y- playerBots_ObsLst.move("SIDEWAYS_AND_DOWN");
 		playerBot_Ob.move(Direction_Enum.LEFT);
 		playerBot_Ob.draw(graphToBack);
 
-		//collision detection
-		//		missiles_ObsLst.boundaryCheckAndClean();
-		//		playerBots_ObsLst.boundaryCheckAndClean();
+        // y- 		for( Sprite_Cl missileOb : missiles_ObsLst){
+        //		    missileOb.move(Direction_Enum.UP);
+        //		    missileOb.draw(graphToBack);
+        //		    if(missileOb.colliding(playerBot_Ob)){
+        //		        Game_Main_JFrame_Cl.SCORE++;
+        //            }
+        //        }
 
-		//		playerBots_ObsLst.collisionCheckAndClean(playerMe_Ob,-1);
-		//		playerBots_ObsLst.collisionCheckAndClean(missiles_ObsLst.getList(),+1);
+        Iterator<Sprite_Cl> missiles_ObsLst_Iterator = missiles_ObsLst.iterator();
+        while( missiles_ObsLst_Iterator.hasNext() ){
+            Sprite_Cl missile_Ob_Curr = missiles_ObsLst_Iterator.next();
+            missile_Ob_Curr.move(Direction_Enum.UP);
+            missile_Ob_Curr.draw(graphToBack);
+
+            if(missile_Ob_Curr.colliding(playerFood_Ob)) {
+                missiles_ObsLst_Iterator.remove();
+                Game_Main_JFrame_Cl.SCORE--;
+            }
+            if(missile_Ob_Curr.colliding(playerBot_Ob)){
+                missiles_ObsLst_Iterator.remove();
+                Game_Main_JFrame_Cl.SCORE++;
+            }
+
+        }
+
         if( playerMe_Ob.colliding(playerFood_Ob) ){
             Game_Main_JFrame_Cl.SCORE++;
         }
@@ -206,43 +202,38 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	    Integer playerInputCode = e.getKeyCode();
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
-		    if( !playerMe_Input_StringOb_ArrLst.contains(playerInputCode))
+		    if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
-                playerMe_Input_StringOb_ArrLst.add(playerInputCode);
+                playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-			//y- keys[0] = true;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
-            if( !playerMe_Input_StringOb_ArrLst.contains(playerInputCode))
+            if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
-                playerMe_Input_StringOb_ArrLst.add(playerInputCode);
+                playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-            //y- keys[1] = true;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP)
 		{
-            if( !playerMe_Input_StringOb_ArrLst.contains(playerInputCode))
+            if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
-                playerMe_Input_StringOb_ArrLst.add(playerInputCode);
+                playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-			//y- keys[2] = true;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)
 		{
-            if( !playerMe_Input_StringOb_ArrLst.contains(playerInputCode))
+            if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
-                playerMe_Input_StringOb_ArrLst.add(playerInputCode);
+                playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-			//y- keys[3] = true;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
-            if( !playerMe_Input_StringOb_ArrLst.contains(playerInputCode))
+            if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
-                playerMe_Input_StringOb_ArrLst.add(playerInputCode);
+                playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-			//y- keys[4] = true;
 		}
 		repaint();
 	}
@@ -252,28 +243,23 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         Integer playerInputCode = e.getKeyCode();
         if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
-            playerMe_Input_StringOb_ArrLst.remove(playerInputCode);
-			//y- keys[0] = false;
+            playerMe_Input_ObsArrLst.remove(playerInputCode);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
-            playerMe_Input_StringOb_ArrLst.remove(playerInputCode);
-			//y- keys[1] = false;
+            playerMe_Input_ObsArrLst.remove(playerInputCode);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_UP)
 		{
-            playerMe_Input_StringOb_ArrLst.remove(playerInputCode);
-			//y- keys[2] = false;
+            playerMe_Input_ObsArrLst.remove(playerInputCode);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)
 		{
-            playerMe_Input_StringOb_ArrLst.remove(playerInputCode);
-			//y- keys[3] = false;
+            playerMe_Input_ObsArrLst.remove(playerInputCode);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
-            playerMe_Input_StringOb_ArrLst.remove(playerInputCode);
-			//y- keys[4] = false;
+            playerMe_Input_ObsArrLst.remove(playerInputCode);
 		}
 		repaint();
 	}

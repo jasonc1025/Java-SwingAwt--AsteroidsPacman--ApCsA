@@ -34,11 +34,11 @@ public class Sprite_CoreExt_Movable_Collidable_Cl extends Sprite_Core_ClAb imple
 
 	public void setSpeed(int s)
 	{
-        speed_Fl =s;
+        speed_Fld =s;
 	}
 	public int getSpeed()
 	{
-		return speed_Fl;
+		return speed_Fld;
 	}
 
     public void move(Game_Cycle_JPanel_Cl.Direction_Enum direction_Enum_In)
