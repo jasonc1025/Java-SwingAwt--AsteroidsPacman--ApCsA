@@ -15,13 +15,14 @@ public class Sprite_Cl {
 	private int imageHeight_Fl;
 	//y- private int speed_Fl;
 	private int speed_Fl;
+	private boolean aiMode_Bool_Fl;
 
 	public Sprite_Cl()
 	{
-		this("/images/Circle-Green-20x20.png",0,0,0);
+		this("/images/Circle-Green-20x20.png",0,0,0, true);
 	}
 
-	public Sprite_Cl(String imageFileIn, int x, int y, int s)
+	public Sprite_Cl(String imageFileIn, int x, int y, int s, boolean aiModeBool_In)
 	{
 		positionX_Fl = x;
 		positionY_Fl = y;
@@ -41,9 +42,10 @@ public class Sprite_Cl {
 			//feel free to do something here
 		}
 		setSpeed(s);
+		setAiMode_Bool(aiModeBool_In);
 	}
 
-	public Sprite_Cl(String imageFileIn, int x, int y, int w, int h, int s)
+	public Sprite_Cl(String imageFileIn, int x, int y, int w, int h, int s, boolean aiModeBool_In)
 	{
 		positionX_Fl = x;
 		positionY_Fl = y;
@@ -61,6 +63,7 @@ public class Sprite_Cl {
 			//feel free to do something here
 		}
 		setSpeed(s);
+        setAiMode_Bool(aiModeBool_In);
 	}
 
 	public void setPos( int x, int y)
@@ -153,34 +156,105 @@ public class Sprite_Cl {
 		return speed_Fl;
 	}
 
+    public void setAiMode_Bool(boolean aiMode_Bool_In)
+    {
+        aiMode_Bool_Fl = aiMode_Bool_In;
+        return;
+    }
+    public boolean getAiMode_Bool()
+    {
+        return aiMode_Bool_Fl;
+    }
+
+
 	public void move(Game_Cycle_JPanel_Cl.Direction_Enum direction_Enum_In)
 	{
+	    int positionX_New = getX();
+	    int positionY_New = getY();
+
 		//o- if(direction_Enum_In.equals("LEFT"))
 		if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.LEFT)
-			setX(getX()-getSpeed());
-			//o- else if(direction_Enum_In.equals("RIGHT"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
-			setX(getX()+getSpeed());
-			//o- else if(direction_Enum_In.equals("UP"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
-			setY(getY()-getSpeed());
-			//o- else if(direction_Enum_In.equals("DOWN"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
-			setY(getY()+getSpeed());
-			//o- else if(direction_Enum_In.equals("SIDEWAYS_AND_DOWN"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.SIDEWAYS_AND_DOWN)
 		{
-			//o- if(getX() > (Game_Main_JFrame_Cl.WIDTH  - getWidth()) || getX() < (0 + getWidth()) )
-			if(getX() > (Game_Main_JFrame_Cl.WIDTH  - Game_Main_JFrame_Cl.BORDER_SAFETY_MARGIN) || getX() < (0 + Game_Main_JFrame_Cl.BORDER_SAFETY_MARGIN) )
-			{
-				setSpeed(-getSpeed());
-				//y- setY(getY()+25);
-				// * only drop by 1 row for smoother transition
-				setY(getY()+(getHeight()*1));
-			}
-			setX(getX()+getSpeed());
-		}
+		    positionX_New = getX() - getSpeed();
+        }
+        //o- else if(direction_Enum_In.equals("RIGHT"))
+		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
+		{
+            //			setX(getX()+getSpeed());
+            positionX_New = getX() + getSpeed();
+        }
+        //o- else if(direction_Enum_In.equals("UP"))
+		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
+		{
+            //            setY(getY() - getSpeed());
+            positionY_New = getY() - getSpeed();
+        }
+        //o- else if(direction_Enum_In.equals("DOWN"))
+        else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
+        {
+            //            setY(getY()+getSpeed());
+            positionY_New = getY() + getSpeed();
+        }
+
+        // * Check Boundaries: X
+        //
+		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth()))
+        {
+            if(aiMode_Bool_Fl){
+                // * reverse speed
+                setSpeed(-getSpeed());
+            }
+            // * remain at old position
+            positionX_New = getX();
+        }
+        setX(positionX_New);
+
+		// * Check Boundaries: Y
+        //
+        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight()))
+        {
+            if(aiMode_Bool_Fl){
+                // * reverse speed
+                setSpeed(-getSpeed());
+            }
+            // * remain at old position
+            positionY_New = getY();
+        }
+        setY(positionY_New);
+
 	}
 
+    public boolean boundaryOk_PosX_Mth(int positionX_In, int spriteWidth_In)
+    {
+        boolean boundaryOk_Bool = true;
+	    if( (positionX_In < 0) || (positionX_In > Game_Main_JFrame_Cl.WIDTH-spriteWidth_In) )
+        {
+           boundaryOk_Bool = false;
+        }
+        return boundaryOk_Bool;
+    }
+
+    public boolean boundaryOk_PosY_Mth(int positionY_In, int spriteHeigth_In)
+    {
+        boolean boundaryOk_Bool = true;
+        if( (positionY_In < 0) || (positionY_In > Game_Main_JFrame_Cl.HEIGHT-spriteHeigth_In) )
+        {
+            boundaryOk_Bool = false;
+        }
+        return boundaryOk_Bool;
+    }
+
+    public boolean colliding( Sprite_Cl spriteOtherIn )
+    {
+        boolean colliding_Boo = false;  // * default to false
+
+        if (
+             ((this.getX() + this.getWidth() >= spriteOtherIn.getX()) && (this.getY() + this.getHeight() >= spriteOtherIn.getY())) &&
+             ((this.getX() <= spriteOtherIn.getX() + spriteOtherIn.getWidth()) && (this.getY() <= spriteOtherIn.getY() + spriteOtherIn.getHeight()))
+           ){
+            colliding_Boo = true;
+        }
+        return colliding_Boo;
+    }
 
 }
