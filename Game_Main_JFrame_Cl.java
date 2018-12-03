@@ -1,3 +1,12 @@
+// Features over Original StarFighter-Lab25-APlusCS-Armstrong
+// using 'BattleCross Technology' from Encourage and Empower
+// * Collision-Detection Algorithm simplified by 50%: 8 lines to 4 lines
+// * Encapsulation via Sharable Class for all/any Sprites
+// * Velocity-Sensitive Motion for PlayerMe_Ob
+
+// TODO
+// * boundary check for methods
+
 //(c) A+ Computer Science
 //www.apluscompsci.com
 //Name -

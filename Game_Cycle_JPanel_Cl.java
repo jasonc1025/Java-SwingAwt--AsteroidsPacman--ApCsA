@@ -48,7 +48,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
 	private BufferedImage back;
 
-	public Game_Cycle_JPanel_Cl(JFrame par)
+	public Game_Cycle_JPanel_Cl(JFrame jFrame_In)
 	{
 		setBackground(Color.black);
 		this.addKeyListener(this);
@@ -56,12 +56,15 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		setVisible(true);
 	}
 
+	// * Will be called from externally on periodic basis
+    // * Later calls 'paint()'
     public void update(Graphics window)
    {
 	   paint(window);
    }
 
-	public void paint( Graphics window )
+    // * Will be called from internally on periodic basis
+    public void paint( Graphics window )
 	{
 		//
 		// * Timer Update
@@ -103,22 +106,24 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         graphToBack.drawString( "> SCORE: " + dfTemp.format(Game_Main_JFrame_Cl.SCORE), 50, 150 );
 
 
-        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_LEFT)) )
-		{
-			playerMe_Ob.move(Direction_Enum.LEFT);
-		}
-        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_RIGHT)) )
-        {
-			playerMe_Ob.move(Direction_Enum.RIGHT);
-		}
-        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_UP)) )
-        {
-			playerMe_Ob.move(Direction_Enum.UP);
-		}
-        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_DOWN)) )
-        {
-			playerMe_Ob.move(Direction_Enum.DOWN);
-		}
+//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_LEFT)) )
+//		{
+//			playerMe_Ob.move(Direction_Enum.LEFT);
+//		}
+//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_RIGHT)) )
+//        {
+//			playerMe_Ob.move(Direction_Enum.RIGHT);
+//		}
+//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_UP)) )
+//        {
+//			playerMe_Ob.move(Direction_Enum.UP);
+//		}
+//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_DOWN)) )
+//        {
+//			playerMe_Ob.move(Direction_Enum.DOWN);
+//		}
+        playerMe_Ob.move();
+
         // * IMPORTANT: 1 sec = 1 x 10^9 nano-sec
         // * IMPORTANT: To avoid 'java: integer number too large' error, require 'l' for 64bit otherwise 32bit default
         // * Projectile at 1/10 sec frequency (or (1/10 * Math.pow(10,9)) nanosec)
@@ -206,6 +211,8 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
+//            playerMe_Ob.setVelocityX(-1);
+            playerMe_Ob.setVelocityX(playerMe_Ob.getVelocityX()-1);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
@@ -213,21 +220,28 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-		}
+//            playerMe_Ob.setVelocityX(+1);
+            playerMe_Ob.setVelocityX(playerMe_Ob.getVelocityX()+1);
+        }
 		if (e.getKeyCode() == KeyEvent.VK_UP)
 		{
             if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-		}
+//            playerMe_Ob.setVelocityY(-1);
+            playerMe_Ob.setVelocityY(playerMe_Ob.getVelocityY()-1);
+
+        }
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)
 		{
             if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-		}
+//            playerMe_Ob.setVelocityY(+1);
+            playerMe_Ob.setVelocityY(playerMe_Ob.getVelocityY()+1);
+        }
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
             if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
@@ -244,11 +258,19 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
             playerMe_Input_ObsArrLst.remove(playerInputCode);
+            // * Special check to clobber/stop if current direction of motion is expected
+//            if(playerMe_Ob.getVelocityX() == -1){
+//                playerMe_Ob.setVelocityX(0);
+//            }
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
             playerMe_Input_ObsArrLst.remove(playerInputCode);
-		}
+            // * Special check to clobber/stop if current direction of motion is expected
+//            if(playerMe_Ob.getVelocityX() == +1){
+//                playerMe_Ob.setVelocityX(0);
+//            }
+        }
 		if (e.getKeyCode() == KeyEvent.VK_UP)
 		{
             playerMe_Input_ObsArrLst.remove(playerInputCode);

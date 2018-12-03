@@ -9,10 +9,14 @@ import java.net.URL;
 public class Sprite_Cl {
 	//y- protected Image image_Fld;
 	private Image image_Fld;
+//	private int positionX_Fld;
+//	private int positionY_Fld;
+//	private int velocityX_Fld;
+//	private int velocityY_Fld;
 	private int positionX_Fld;
 	private int positionY_Fld;
-	private double velocityX_Fld;
-	private double velocityY_Fld;
+	private int velocityX_Fld;
+	private int velocityY_Fld;
 	private int imageWidth_Fld;
 	private int imageHeight_Fld;
 	private int speed_Fld;
@@ -75,12 +79,16 @@ public class Sprite_Cl {
 
 	public void setX(int x)
 	{
-		positionX_Fld =x;
+		if(x < 0){ x = 0; }
+		if(x > Game_Main_JFrame_Cl.WIDTH){ x = Game_Main_JFrame_Cl.WIDTH; }
+		positionX_Fld = x;
 	}
 
 	public void setY(int y)
 	{
-		positionY_Fld =y;
+		if(y < 0){ y = 0; }
+		if(y > Game_Main_JFrame_Cl.HEIGHT){ y = Game_Main_JFrame_Cl.HEIGHT; }
+		positionY_Fld = y;
 	}
 
 	public int getX()
@@ -148,7 +156,20 @@ public class Sprite_Cl {
 		return speed_Fld;
 	}
 
-    public void setAiMode_Bool(boolean aiMode_Bool_In)
+	public void setVelocityX(int velocityX_In){
+		this.velocityX_Fld = velocityX_In;
+	}
+	public void setVelocityY(int velocityY_In){
+		this.velocityY_Fld = velocityY_In;
+	}
+	public int getVelocityX(){
+		return this.velocityX_Fld;
+	}
+	public int getVelocityY(){
+		return this.velocityY_Fld;
+	}
+
+	public void setAiMode_Bool(boolean aiMode_Bool_In)
     {
         aiMode_Bool_Fld = aiMode_Bool_In;
         return;
@@ -164,29 +185,32 @@ public class Sprite_Cl {
 	    int positionX_New = getX();
 	    int positionY_New = getY();
 
-		//o- if(direction_Enum_In.equals("LEFT"))
-		if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.LEFT)
-		{
-		    positionX_New = getX() - getSpeed();
-        }
-        //o- else if(direction_Enum_In.equals("RIGHT"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
-		{
-            //			setX(getX()+getSpeed());
-            positionX_New = getX() + getSpeed();
-        }
-        //o- else if(direction_Enum_In.equals("UP"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
-		{
-            //            setY(getY() - getSpeed());
-            positionY_New = getY() - getSpeed();
-        }
-        //o- else if(direction_Enum_In.equals("DOWN"))
-        else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
-        {
-            //            setY(getY()+getSpeed());
-            positionY_New = getY() + getSpeed();
-        }
+		//o- 		//o- if(direction_Enum_In.equals("LEFT"))
+		//		if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.LEFT)
+		//		{
+		//		    positionX_New = getX() - getSpeed();
+		//        }
+		//        //o- else if(direction_Enum_In.equals("RIGHT"))
+		//		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
+		//		{
+		//            //			setX(getX()+getSpeed());
+		//            positionX_New = getX() + getSpeed();
+		//        }
+		//        //o- else if(direction_Enum_In.equals("UP"))
+		//		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
+		//		{
+		//            //            setY(getY() - getSpeed());
+		//            positionY_New = getY() - getSpeed();
+		//        }
+		//        //o- else if(direction_Enum_In.equals("DOWN"))
+		//        else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
+		//        {
+		//            //            setY(getY()+getSpeed());
+		//            positionY_New = getY() + getSpeed();
+		//        }
+
+		this.positionX_Fld += this.velocityX_Fld;
+		this.positionY_Fld += this.velocityY_Fld;
 
         // * Check Boundaries: X
         //
@@ -194,7 +218,8 @@ public class Sprite_Cl {
         {
             if(aiMode_Bool_Fld){
                 // * reverse speed
-                setSpeed(-getSpeed());
+				//				setSpeed(-getSpeed());
+				setVelocityX(-getVelocityX());
             }
             // * remain at old position
             positionX_New = getX();
@@ -207,7 +232,8 @@ public class Sprite_Cl {
         {
             if(aiMode_Bool_Fld){
                 // * reverse speed
-                setSpeed(-getSpeed());
+				//                setSpeed(-getSpeed());
+				setVelocityY(-getVelocityY());
             }
             // * remain at old position
             positionY_New = getY();
@@ -216,7 +242,47 @@ public class Sprite_Cl {
 
 	}
 
-    public boolean boundaryOk_PosX_Mth(int positionX_In, int spriteWidth_In)
+
+	public void move()
+	{
+		int positionX_New = getX();
+		int positionY_New = getY();
+
+		positionX_New += this.velocityX_Fld;
+		positionY_New += this.velocityY_Fld;
+
+		// * Check Boundaries: X
+		//
+		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth()))
+		{
+//			if(aiMode_Bool_Fld){
+				// * reverse speed
+				//				setSpeed(-getSpeed());
+				setVelocityX(-getVelocityX());
+//			}
+			// * remain at old position
+			positionX_New = getX();
+		}
+		setX(positionX_New);
+
+		// * Check Boundaries: Y
+		//
+		if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight()))
+		{
+//			if(aiMode_Bool_Fld){
+				// * reverse speed
+				//                setSpeed(-getSpeed());
+				setVelocityY(-getVelocityY());
+//			}
+			// * remain at old position
+			positionY_New = getY();
+		}
+		setY(positionY_New);
+
+	}
+
+
+	public boolean boundaryOk_PosX_Mth(int positionX_In, int spriteWidth_In)
     {
         boolean boundaryOk_Bool = true;
 	    if( (positionX_In < 0) || (positionX_In > Game_Main_JFrame_Cl.WIDTH-spriteWidth_In) )
