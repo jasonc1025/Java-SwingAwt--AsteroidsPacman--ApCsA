@@ -9,36 +9,31 @@ import java.net.URL;
 public class Sprite_Cl {
 	//y- protected Image image_Fld;
 	private Image image_Fld;
-//	private int positionX_Fld;
-//	private int positionY_Fld;
-//	private int velocityX_Fld;
-//	private int velocityY_Fld;
 	private int positionX_Fld;
 	private int positionY_Fld;
 	private int velocityX_Fld;
 	private int velocityY_Fld;
 	private int imageWidth_Fld;
 	private int imageHeight_Fld;
-	private int speed_Fld;
 	private boolean aiMode_Bool_Fld;
 
 	public Sprite_Cl()
 	{
-		this("/images/Circle-Green-20x20.png",0,0,0, true);
+		this("/images/Circle-Green-20x20.png",0,0, 0, 0, true);
 	}
 
-	public Sprite_Cl(String imageFileIn, int x, int y, int s, boolean aiModeBool_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int velocityX_In, int velocityY_In, boolean aiModeBool_In)
 	{
-		positionX_Fld = x;
-		positionY_Fld = y;
+		positionX_Fld = x_In;
+		positionY_Fld = y_In;
 		//y- imageWidth_Fld = w;
 		//y- imageHeight_Fld = h;
 
 		try
 		{
 			//y- URL url = getClass().getResource("/images/ship.jpg");
-			URL url = getClass().getResource(imageFileIn);
-			setImage(ImageIO.read(url));
+			URL url = getClass().getResource(imageFile_In);
+			setImage_Mth(ImageIO.read(url));
 			this.imageWidth_Fld = image_Fld.getWidth( null );
 			this.imageHeight_Fld = image_Fld.getHeight( null );
 		}
@@ -46,130 +41,126 @@ public class Sprite_Cl {
 		{
 			//feel free to do something here
 		}
-		setSpeed(s);
-		setAiMode_Bool(aiModeBool_In);
+		//		setSpeed(s);
+		velocityX_Fld = velocityX_In;
+		velocityY_Fld = velocityY_In;
+
+		setAiMode_Bool_Mth(aiModeBool_In);
 	}
 
-	public Sprite_Cl(String imageFileIn, int x, int y, int w, int h, int s, boolean aiModeBool_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int weight_In, int height_In, int velocityX_In, int velocityY_In, boolean aiModeBool_In)
 	{
-		positionX_Fld = x;
-		positionY_Fld = y;
+		positionX_Fld = x_In;
+		positionY_Fld = y_In;
 
 		try
 		{
 			//y- URL url = getClass().getResource("/images/ship.jpg");
-			URL url = getClass().getResource(imageFileIn);
-			setImage(ImageIO.read(url));
-			this.imageWidth_Fld = w;
-			this.imageHeight_Fld = h;
+			URL url = getClass().getResource(imageFile_In);
+			setImage_Mth(ImageIO.read(url));
+			this.imageWidth_Fld = weight_In;
+			this.imageHeight_Fld = height_In;
 		}
 		catch(Exception e)
 		{
 			//feel free to do something here
 		}
-		setSpeed(s);
-        setAiMode_Bool(aiModeBool_In);
+		// setSpeed(s);
+		velocityX_Fld = velocityX_In;
+		velocityY_Fld = velocityY_In;
+        setAiMode_Bool_Mth(aiModeBool_In);
 	}
 
-	public void setPos( int x, int y)
+	public void setPos_Mth(int x_In, int y_In)
 	{
-		positionX_Fld = x;
-		positionY_Fld = y;
+		positionX_Fld = x_In;
+		positionY_Fld = y_In;
 	}
 
-	public void setX(int x)
+	public void setX_Mth(int x_In)
 	{
-		if(x < 0){ x = 0; }
-		if(x > Game_Main_JFrame_Cl.WIDTH){ x = Game_Main_JFrame_Cl.WIDTH; }
-		positionX_Fld = x;
+		if(x_In < 0){ x_In = 0; }
+		if(x_In > Game_Main_JFrame_Cl.WIDTH){ x_In = Game_Main_JFrame_Cl.WIDTH; }
+		positionX_Fld = x_In;
 	}
 
-	public void setY(int y)
+	public void setY_Mth(int y_In)
 	{
-		if(y < 0){ y = 0; }
-		if(y > Game_Main_JFrame_Cl.HEIGHT){ y = Game_Main_JFrame_Cl.HEIGHT; }
-		positionY_Fld = y;
+		if(y_In < 0){ y_In = 0; }
+		if(y_In > Game_Main_JFrame_Cl.HEIGHT){ y_In = Game_Main_JFrame_Cl.HEIGHT; }
+		positionY_Fld = y_In;
 	}
 
-	public int getX()
+	public int getX_Mth()
 	{
 		return positionX_Fld;
 	}
 
-	public int getY()
+	public int getY_Mth()
 	{
 		return positionY_Fld;
 	}
 
-	public void setWidth(int w)
+	public void setWidth_Mth(int width_In)
 	{
-		imageWidth_Fld = w;
+		imageWidth_Fld = width_In;
 	}
 
-	public void setHeight(int h)
+	public void setHeight_Mth(int height_In)
 	{
-		imageHeight_Fld = h;
+		imageHeight_Fld = height_In;
 	}
 
-	public int getWidth()
+	public int getWidth_Mth()
 	{
 		return imageWidth_Fld;
 	}
 
-	public int getHeight()
+	public int getHeight_Mth()
 	{
 		return imageHeight_Fld;
 	}
 
 	//y- public abstract void move(String direction);
-	//o- public void draw(Graphics window);
-	public void draw( Graphics window )
+	//o- public void draw_Mth(Graphics window);
+	public void draw_Mth(Graphics window )
 	{
-		window.drawImage(getImage(),getX(),getY(),getWidth(),getHeight(),null);
+		window.drawImage(getImage_Mth(), getX_Mth(), getY_Mth(), getWidth_Mth(), getHeight_Mth(),null);
 	}
 
 	public String toString()
 	{
-		return getX() + " " + getY() + " " + getWidth() + " " + getHeight();
+		return getX_Mth() + " " + getY_Mth() + " " + getWidth_Mth() + " " + getHeight_Mth();
 	}
 
-	public Image getImage() {
+	public Image getImage_Mth() {
 		return image_Fld;
 	}
 
-	public void setImage(Image imageFlIn) {
-		this.image_Fld = imageFlIn;
-		this.imageWidth_Fld = imageFlIn.getWidth( null );
-		this.imageHeight_Fld = imageFlIn.getHeight( null );
+	public void setImage_Mth(Image image_In) {
+		this.image_Fld = image_In;
+		this.imageWidth_Fld = image_In.getWidth( null );
+		this.imageHeight_Fld = image_In.getHeight( null );
 	}
-	public void setImageSize(int w, int h) {
-		this.imageWidth_Fld = w;
-		this.imageHeight_Fld = h;
-	}
-
-	public void setSpeed(int s)
-	{
-		speed_Fld = s;
-	}
-	public int getSpeed()
-	{
-		return speed_Fld;
+	public void setImageSize_Mth(int width_In, int height_In) {
+		this.imageWidth_Fld = width_In;
+		this.imageHeight_Fld = height_In;
 	}
 
-	public void setVelocityX(int velocityX_In){
+	public void setVelocityX_Mth(int velocityX_In){
 		this.velocityX_Fld = velocityX_In;
 	}
-	public void setVelocityY(int velocityY_In){
+	public void setVelocityY_Mth(int velocityY_In){
 		this.velocityY_Fld = velocityY_In;
 	}
-	public int getVelocityX(){
+	public int getVelocityX_Mth(){
 		return this.velocityX_Fld;
 	}
-	public int getVelocityY(){
+	public int getVelocityY_Mth(){
 		return this.velocityY_Fld;
 	}
 
-	public void setAiMode_Bool(boolean aiMode_Bool_In)
+	public void setAiMode_Bool_Mth(boolean aiMode_Bool_In)
     {
         aiMode_Bool_Fld = aiMode_Bool_In;
         return;
@@ -180,33 +171,33 @@ public class Sprite_Cl {
     }
 
 
-	public void move(Game_Cycle_JPanel_Cl.Direction_Enum direction_Enum_In)
+	public void move_Mth(Game_Cycle_JPanel_Cl.Direction_Enum direction_Enum_In)
 	{
-	    int positionX_New = getX();
-	    int positionY_New = getY();
+	    int positionX_New = getX_Mth();
+	    int positionY_New = getY_Mth();
 
 		//o- 		//o- if(direction_Enum_In.equals("LEFT"))
 		//		if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.LEFT)
 		//		{
-		//		    positionX_New = getX() - getSpeed();
+		//		    positionX_New = getX_Mth() - getSpeed();
 		//        }
 		//        //o- else if(direction_Enum_In.equals("RIGHT"))
 		//		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
 		//		{
-		//            //			setX(getX()+getSpeed());
-		//            positionX_New = getX() + getSpeed();
+		//            //			setX_Mth(getX_Mth()+getSpeed());
+		//            positionX_New = getX_Mth() + getSpeed();
 		//        }
 		//        //o- else if(direction_Enum_In.equals("UP"))
 		//		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
 		//		{
-		//            //            setY(getY() - getSpeed());
-		//            positionY_New = getY() - getSpeed();
+		//            //            setY_Mth(getY_Mth() - getSpeed());
+		//            positionY_New = getY_Mth() - getSpeed();
 		//        }
 		//        //o- else if(direction_Enum_In.equals("DOWN"))
 		//        else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
 		//        {
-		//            //            setY(getY()+getSpeed());
-		//            positionY_New = getY() + getSpeed();
+		//            //            setY_Mth(getY_Mth()+getSpeed());
+		//            positionY_New = getY_Mth() + getSpeed();
 		//        }
 
 		this.positionX_Fld += this.velocityX_Fld;
@@ -214,70 +205,70 @@ public class Sprite_Cl {
 
         // * Check Boundaries: X
         //
-		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth()))
+		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
         {
             if(aiMode_Bool_Fld){
                 // * reverse speed
 				//				setSpeed(-getSpeed());
-				setVelocityX(-getVelocityX());
+				setVelocityX_Mth(-getVelocityX_Mth());
             }
             // * remain at old position
-            positionX_New = getX();
+            positionX_New = getX_Mth();
         }
-        setX(positionX_New);
+        setX_Mth(positionX_New);
 
 		// * Check Boundaries: Y
         //
-        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight()))
+        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
         {
             if(aiMode_Bool_Fld){
                 // * reverse speed
 				//                setSpeed(-getSpeed());
-				setVelocityY(-getVelocityY());
+				setVelocityY_Mth(-getVelocityY_Mth());
             }
             // * remain at old position
-            positionY_New = getY();
+            positionY_New = getY_Mth();
         }
-        setY(positionY_New);
+        setY_Mth(positionY_New);
 
 	}
 
 
-	public void move()
+	public void move_Mth()
 	{
-		int positionX_New = getX();
-		int positionY_New = getY();
+		int positionX_New = getX_Mth();
+		int positionY_New = getY_Mth();
 
 		positionX_New += this.velocityX_Fld;
 		positionY_New += this.velocityY_Fld;
 
 		// * Check Boundaries: X
 		//
-		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth()))
+		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
 		{
 //			if(aiMode_Bool_Fld){
 				// * reverse speed
 				//				setSpeed(-getSpeed());
-				setVelocityX(-getVelocityX());
+				setVelocityX_Mth(-getVelocityX_Mth());
 //			}
 			// * remain at old position
-			positionX_New = getX();
+			positionX_New = getX_Mth();
 		}
-		setX(positionX_New);
+		setX_Mth(positionX_New);
 
 		// * Check Boundaries: Y
 		//
-		if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight()))
+		if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
 		{
 //			if(aiMode_Bool_Fld){
 				// * reverse speed
 				//                setSpeed(-getSpeed());
-				setVelocityY(-getVelocityY());
+				setVelocityY_Mth(-getVelocityY_Mth());
 //			}
 			// * remain at old position
-			positionY_New = getY();
+			positionY_New = getY_Mth();
 		}
-		setY(positionY_New);
+		setY_Mth(positionY_New);
 
 	}
 
@@ -302,13 +293,13 @@ public class Sprite_Cl {
         return boundaryOk_Bool;
     }
 
-    public boolean colliding( Sprite_Cl spriteOtherIn )
+    public boolean colliding_Mth(Sprite_Cl spriteOther_In )
     {
         boolean colliding_Boo = false;  // * default to false
 
         if (
-             ((this.getX() + this.getWidth() >= spriteOtherIn.getX()) && (this.getY() + this.getHeight() >= spriteOtherIn.getY())) &&
-             ((this.getX() <= spriteOtherIn.getX() + spriteOtherIn.getWidth()) && (this.getY() <= spriteOtherIn.getY() + spriteOtherIn.getHeight()))
+             ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
+             ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
            ){
             colliding_Boo = true;
         }

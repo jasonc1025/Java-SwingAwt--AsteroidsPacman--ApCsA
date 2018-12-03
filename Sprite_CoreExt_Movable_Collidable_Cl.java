@@ -58,11 +58,11 @@ public class Sprite_CoreExt_Movable_Collidable_Cl extends Sprite_Core_ClAb imple
 		//o- else if(direction_Enum_In.equals("SIDEWAYS_AND_DOWN"))
 		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.SIDEWAYS_AND_DOWN)
 		{
-			//o- if(getX() > (Game_Main_JFrame_Cl.WIDTH  - getWidth()) || getX() < (0 + getWidth()) )
+			//o- if(getX_Mth() > (Game_Main_JFrame_Cl.WIDTH  - getWidth_Mth()) || getX_Mth() < (0 + getWidth_Mth()) )
 			if(getX() > (Game_Main_JFrame_Cl.WIDTH  - Game_Main_JFrame_Cl.BORDER_SAFETY_MARGIN) || getX() < (0 + Game_Main_JFrame_Cl.BORDER_SAFETY_MARGIN) )
 			{
 				setSpeed(-getSpeed());
-				//y- setY(getY()+25);
+				//y- setY_Mth(getY_Mth()+25);
 				// * only drop by 1 row for smoother transition
 				setY(getY()+(getHeight()*1));
 			}

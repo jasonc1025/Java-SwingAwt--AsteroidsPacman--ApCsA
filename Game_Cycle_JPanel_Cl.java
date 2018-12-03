@@ -25,11 +25,12 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		UP, DOWN, LEFT, RIGHT, SIDEWAYS_AND_DOWN;
 	}
 
-	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,2,false);
+	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100, 0, 0, false);
 
-	private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,1,true);
+    //y- private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,(int)((Math.random()*3))-1,(int)((Math.random()*3))-1,true);
+    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100, 0, 0,true);
 
-	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,1, true);
+	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,0,0,true);
 
 	private ArrayList<Sprite_Cl> missiles_ObsLst = new ArrayList<Sprite_Cl>();
 
@@ -48,13 +49,28 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
 	private BufferedImage back;
 
-	public Game_Cycle_JPanel_Cl(JFrame jFrame_In)
+    public Game_Cycle_JPanel_Cl(JFrame jFrame_In)
 	{
-		setBackground(Color.black);
+        int velocityX_New;
+        int velocityY_New;
+
+        setBackground(Color.black);
 		this.addKeyListener(this);
 		new Thread(this).start();
 		setVisible(true);
-	}
+
+        // * Random Range [-1, 1]
+		velocityX_New = randomRoll_Mth(3, 0, -1);
+        velocityY_New = randomRoll_Mth(3, 0, -1);
+        playerBot_Ob.setVelocityX_Mth(velocityX_New);
+        playerBot_Ob.setVelocityY_Mth(velocityY_New);
+
+        // * Random Range [-1, 1]
+        velocityX_New = randomRoll_Mth(3, 0, -1);
+        velocityY_New = randomRoll_Mth(3, 0, -1);
+        playerFood_Ob.setVelocityX_Mth(velocityX_New);
+        playerFood_Ob.setVelocityY_Mth(velocityY_New);
+    }
 
 	// * Will be called from externally on periodic basis
     // * Later calls 'paint()'
@@ -63,7 +79,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	   paint(window);
    }
 
-    // * Will be called from internally on periodic basis
+    // * Will be called from 'update()' internally on periodic basis
     public void paint( Graphics window )
 	{
 		//
@@ -91,7 +107,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	   }
 
 		//create a graphics reference to the back ground image
-		//we will draw all changes on the background image
+		//we will draw_Mth all changes on the background image
 		Graphics graphToBack = back.createGraphics();
 
 		graphToBack.setColor(Color.BLACK);
@@ -122,7 +138,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //        {
 //			playerMe_Ob.move(Direction_Enum.DOWN);
 //		}
-        playerMe_Ob.move();
+        playerMe_Ob.move_Mth();
 
         // * IMPORTANT: 1 sec = 1 x 10^9 nano-sec
         // * IMPORTANT: To avoid 'java: integer number too large' error, require 'l' for 64bit otherwise 32bit default
@@ -130,11 +146,13 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         // ** '1.0' required for decimal division
         if( ( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_SPACE)) ) && ( gameCycle_Curr_NanoSec - gameCycle_Projectile_Prev_NanoSec > (1.0/gameCycle_Projectile_Per_Sec * Math.pow(10,9)) ) )
 		{
-            Sprite_Cl missileTemp = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0, true);
-            missileTemp.setImageSize(10,10);
-            missileTemp.setPos(playerMe_Ob.getX()+ playerMe_Ob.getWidth()/2-(missileTemp.getWidth()/2), playerMe_Ob.getY()-(missileTemp.getHeight()/2));
-            missileTemp.setSpeed(5);
-            missiles_ObsLst.add(missileTemp);
+            Sprite_Cl missileNew = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0, 0, true);
+            missileNew.setImageSize_Mth(10,10);
+            missileNew.setPos_Mth(playerMe_Ob.getX_Mth()+ (playerMe_Ob.getWidth_Mth()/2)-(missileNew.getWidth_Mth()/2), playerMe_Ob.getY_Mth()+ (playerMe_Ob.getHeight_Mth()/2)-(missileNew.getHeight_Mth()/2));
+//            missileNew.setSpeed(5);
+            missileNew.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth()*2);
+            missileNew.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth()*2);
+            missiles_ObsLst.add(missileNew);
             gameCycle_Projectile_Prev_NanoSec = gameCycle_Curr_NanoSec;
 
 			try {
@@ -157,18 +175,19 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 			}
 		}
 
-		playerFood_Ob.move(Direction_Enum.RIGHT);
-		playerFood_Ob.draw(graphToBack);
+        //	(int)((Math.random()*3))-1 >> ranges [-2,+2]
+		playerFood_Ob.move_Mth();
+        playerFood_Ob.draw_Mth(graphToBack);
 
-		playerMe_Ob.draw(graphToBack);
+		playerMe_Ob.draw_Mth(graphToBack);
 
-		playerBot_Ob.move(Direction_Enum.LEFT);
-		playerBot_Ob.draw(graphToBack);
+		playerBot_Ob.move_Mth();
+		playerBot_Ob.draw_Mth(graphToBack);
 
         // y- 		for( Sprite_Cl missileOb : missiles_ObsLst){
         //		    missileOb.move(Direction_Enum.UP);
-        //		    missileOb.draw(graphToBack);
-        //		    if(missileOb.colliding(playerBot_Ob)){
+        //		    missileOb.draw_Mth(graphToBack);
+        //		    if(missileOb.colliding_Mth(playerBot_Ob)){
         //		        Game_Main_JFrame_Cl.SCORE++;
         //            }
         //        }
@@ -176,24 +195,25 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         Iterator<Sprite_Cl> missiles_ObsLst_Iterator = missiles_ObsLst.iterator();
         while( missiles_ObsLst_Iterator.hasNext() ){
             Sprite_Cl missile_Ob_Curr = missiles_ObsLst_Iterator.next();
-            missile_Ob_Curr.move(Direction_Enum.UP);
-            missile_Ob_Curr.draw(graphToBack);
+//            missile_Ob_Curr.move(Direction_Enum.UP);
+            missile_Ob_Curr.move_Mth();
+            missile_Ob_Curr.draw_Mth(graphToBack);
 
-            if(missile_Ob_Curr.colliding(playerFood_Ob)) {
+            if(missile_Ob_Curr.colliding_Mth(playerFood_Ob)) {
                 missiles_ObsLst_Iterator.remove();
                 Game_Main_JFrame_Cl.SCORE--;
             }
-            if(missile_Ob_Curr.colliding(playerBot_Ob)){
+            if(missile_Ob_Curr.colliding_Mth(playerBot_Ob)){
                 missiles_ObsLst_Iterator.remove();
                 Game_Main_JFrame_Cl.SCORE++;
             }
 
         }
 
-        if( playerMe_Ob.colliding(playerFood_Ob) ){
+        if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
             Game_Main_JFrame_Cl.SCORE++;
         }
-        if( playerMe_Ob.colliding(playerBot_Ob) ){
+        if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
             Game_Main_JFrame_Cl.SCORE--;
         }
 
@@ -207,21 +227,34 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	    Integer playerInputCode = e.getKeyCode();
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
-		    if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
-            {
-                playerMe_Input_ObsArrLst.add(playerInputCode);
-            }
-//            playerMe_Ob.setVelocityX(-1);
-            playerMe_Ob.setVelocityX(playerMe_Ob.getVelocityX()-1);
-		}
+//o- 		    if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
+//            {
+//                playerMe_Input_ObsArrLst.add(playerInputCode);
+//            }
+
+//            playerMe_Ob.setVelocityX_Mth(-1);
+//            if(Math.abs(playerMe_Ob.getVelocityX_Mth()) > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+
+//y for gravity-less:              if(playerMe_Ob.getVelocityX_Mth() > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+//                playerMe_Ob.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth() - 1);
+//            }
+            playerMe_Ob.setVelocityX_Mth(-Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
+            playerMe_Ob.setVelocityY_Mth(0);
+        }
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
             if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-//            playerMe_Ob.setVelocityX(+1);
-            playerMe_Ob.setVelocityX(playerMe_Ob.getVelocityX()+1);
+//            playerMe_Ob.setVelocityX_Mth(+1);
+//            if(Math.abs(playerMe_Ob.getVelocityX_Mth()) < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+
+//y for gravity-less:              if(playerMe_Ob.getVelocityX_Mth() < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+//                playerMe_Ob.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth() + 1);
+//            }
+            playerMe_Ob.setVelocityX_Mth(+Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
+            playerMe_Ob.setVelocityY_Mth(0);
         }
 		if (e.getKeyCode() == KeyEvent.VK_UP)
 		{
@@ -229,9 +262,14 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-//            playerMe_Ob.setVelocityY(-1);
-            playerMe_Ob.setVelocityY(playerMe_Ob.getVelocityY()-1);
+//            playerMe_Ob.setVelocityY_Mth(-1);
+//            if(Math.abs(playerMe_Ob.getVelocityY_Mth()) < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
 
+//y for gravity-less:               if(playerMe_Ob.getVelocityY_Mth() > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+//                playerMe_Ob.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth() - 1);
+//            }
+            playerMe_Ob.setVelocityX_Mth(0);
+            playerMe_Ob.setVelocityY_Mth(-Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
         }
 		if (e.getKeyCode() == KeyEvent.VK_DOWN)
 		{
@@ -239,8 +277,12 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-//            playerMe_Ob.setVelocityY(+1);
-            playerMe_Ob.setVelocityY(playerMe_Ob.getVelocityY()+1);
+//y for gravity-less:            playerMe_Ob.setVelocityY_Mth(+1);
+//            if(playerMe_Ob.getVelocityY_Mth() < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+//                playerMe_Ob.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth() + 1);
+//            }
+            playerMe_Ob.setVelocityX_Mth(0);
+            playerMe_Ob.setVelocityY_Mth(+Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
         }
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
@@ -259,16 +301,16 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		{
             playerMe_Input_ObsArrLst.remove(playerInputCode);
             // * Special check to clobber/stop if current direction of motion is expected
-//            if(playerMe_Ob.getVelocityX() == -1){
-//                playerMe_Ob.setVelocityX(0);
+//            if(playerMe_Ob.getVelocityX_Mth() == -1){
+//                playerMe_Ob.setVelocityX_Mth(0);
 //            }
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
 		{
             playerMe_Input_ObsArrLst.remove(playerInputCode);
             // * Special check to clobber/stop if current direction of motion is expected
-//            if(playerMe_Ob.getVelocityX() == +1){
-//                playerMe_Ob.setVelocityX(0);
+//            if(playerMe_Ob.getVelocityX_Mth() == +1){
+//                playerMe_Ob.setVelocityX_Mth(0);
 //            }
         }
 		if (e.getKeyCode() == KeyEvent.VK_UP)
@@ -290,6 +332,13 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	{
 
 	}
+
+	public int randomRoll_Mth( int dice_NumberOfSides_In, int dice_ValueMin_In, int dice_FinalOffset ){
+        int randomRollNew = 0;
+        // * Math.random() >> [0.. 0.99]
+        randomRollNew = ((int)(Math.random() * dice_NumberOfSides_In) + dice_ValueMin_In) + dice_FinalOffset;
+        return randomRollNew;
+    }
 
    public void run()
    {

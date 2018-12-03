@@ -25,6 +25,9 @@ public class Game_Main_JFrame_Cl extends JFrame
 	public static int HEIGHT = 800;
 
 	public static int BORDER_SAFETY_MARGIN = 50;
+	// * 2 seems like a good speed, not too fast nor slow
+	public static int SPRITE_VELOCITY_MAX = 2;
+
 
 	public static int SCORE = 0;
 

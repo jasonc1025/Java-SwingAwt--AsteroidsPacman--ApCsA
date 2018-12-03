@@ -101,7 +101,7 @@ public class Sprites_CoreExtLst_Movable_Collidable_Cl
 	{
 		for(int i = 0; i< sprites_ObsLst_Fld.size(); i++)
 		{
-//			if(sprites_ObsLst_Fld.get(i).getX()<-20)
+//			if(sprites_ObsLst_Fld.get(i).getX_Mth()<-20)
 			if( (sprites_ObsLst_Fld.get(i).getY() < (0 + Game_Main_JFrame_Cl.BORDER_SAFETY_MARGIN) ) ||
                 (sprites_ObsLst_Fld.get(i).getY() > (Game_Main_JFrame_Cl.HEIGHT - Game_Main_JFrame_Cl.BORDER_SAFETY_MARGIN)) ) {
                 sprites_ObsLst_Fld.remove(i);
