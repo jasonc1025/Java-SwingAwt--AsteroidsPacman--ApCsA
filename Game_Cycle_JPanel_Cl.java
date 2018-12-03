@@ -122,22 +122,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         graphToBack.drawString( "> SCORE: " + dfTemp.format(Game_Main_JFrame_Cl.SCORE), 50, 150 );
 
 
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_LEFT)) )
-//		{
-//			playerMe_Ob.move(Direction_Enum.LEFT);
-//		}
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_RIGHT)) )
-//        {
-//			playerMe_Ob.move(Direction_Enum.RIGHT);
-//		}
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_UP)) )
-//        {
-//			playerMe_Ob.move(Direction_Enum.UP);
-//		}
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_DOWN)) )
-//        {
-//			playerMe_Ob.move(Direction_Enum.DOWN);
-//		}
         playerMe_Ob.move_Mth();
 
         // * IMPORTANT: 1 sec = 1 x 10^9 nano-sec
@@ -149,7 +133,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             Sprite_Cl missileNew = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0, 0, true);
             missileNew.setImageSize_Mth(10,10);
             missileNew.setPos_Mth(playerMe_Ob.getX_Mth()+ (playerMe_Ob.getWidth_Mth()/2)-(missileNew.getWidth_Mth()/2), playerMe_Ob.getY_Mth()+ (playerMe_Ob.getHeight_Mth()/2)-(missileNew.getHeight_Mth()/2));
-//            missileNew.setSpeed(5);
             missileNew.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth()*2);
             missileNew.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth()*2);
             missiles_ObsLst.add(missileNew);
@@ -184,18 +167,10 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		playerBot_Ob.move_Mth();
 		playerBot_Ob.draw_Mth(graphToBack);
 
-        // y- 		for( Sprite_Cl missileOb : missiles_ObsLst){
-        //		    missileOb.move(Direction_Enum.UP);
-        //		    missileOb.draw_Mth(graphToBack);
-        //		    if(missileOb.colliding_Mth(playerBot_Ob)){
-        //		        Game_Main_JFrame_Cl.SCORE++;
-        //            }
-        //        }
 
         Iterator<Sprite_Cl> missiles_ObsLst_Iterator = missiles_ObsLst.iterator();
         while( missiles_ObsLst_Iterator.hasNext() ){
             Sprite_Cl missile_Ob_Curr = missiles_ObsLst_Iterator.next();
-//            missile_Ob_Curr.move(Direction_Enum.UP);
             missile_Ob_Curr.move_Mth();
             missile_Ob_Curr.draw_Mth(graphToBack);
 
@@ -210,9 +185,11 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
         }
 
-        if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
-            Game_Main_JFrame_Cl.SCORE++;
-        }
+        // * Comment out as too easy for scoring
+//        if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
+//            Game_Main_JFrame_Cl.SCORE++;
+//        }
+        // * Keep to keep things challenging
         if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
             Game_Main_JFrame_Cl.SCORE--;
         }
@@ -227,17 +204,17 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	    Integer playerInputCode = e.getKeyCode();
 		if (e.getKeyCode() == KeyEvent.VK_LEFT)
 		{
-//o- 		    if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
-//            {
-//                playerMe_Input_ObsArrLst.add(playerInputCode);
-//            }
+            //o- 		    if( !playerMe_Input_ObsArrLst.contains(playerInputCode))
+            //            {
+            //                playerMe_Input_ObsArrLst.add(playerInputCode);
+            //            }
 
-//            playerMe_Ob.setVelocityX_Mth(-1);
-//            if(Math.abs(playerMe_Ob.getVelocityX_Mth()) > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //            playerMe_Ob.setVelocityX_Mth(-1);
+            //            if(Math.abs(playerMe_Ob.getVelocityX_Mth()) > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
 
-//y for gravity-less:              if(playerMe_Ob.getVelocityX_Mth() > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
-//                playerMe_Ob.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth() - 1);
-//            }
+            //y for gravity-less:              if(playerMe_Ob.getVelocityX_Mth() > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //                playerMe_Ob.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth() - 1);
+            //            }
             playerMe_Ob.setVelocityX_Mth(-Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
             playerMe_Ob.setVelocityY_Mth(0);
         }
@@ -247,12 +224,12 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-//            playerMe_Ob.setVelocityX_Mth(+1);
-//            if(Math.abs(playerMe_Ob.getVelocityX_Mth()) < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //            playerMe_Ob.setVelocityX_Mth(+1);
+            //            if(Math.abs(playerMe_Ob.getVelocityX_Mth()) < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
 
-//y for gravity-less:              if(playerMe_Ob.getVelocityX_Mth() < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
-//                playerMe_Ob.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth() + 1);
-//            }
+            //y for gravity-less:              if(playerMe_Ob.getVelocityX_Mth() < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //                playerMe_Ob.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth() + 1);
+            //            }
             playerMe_Ob.setVelocityX_Mth(+Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
             playerMe_Ob.setVelocityY_Mth(0);
         }
@@ -262,12 +239,12 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-//            playerMe_Ob.setVelocityY_Mth(-1);
-//            if(Math.abs(playerMe_Ob.getVelocityY_Mth()) < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //            playerMe_Ob.setVelocityY_Mth(-1);
+            //            if(Math.abs(playerMe_Ob.getVelocityY_Mth()) < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
 
-//y for gravity-less:               if(playerMe_Ob.getVelocityY_Mth() > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
-//                playerMe_Ob.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth() - 1);
-//            }
+            //y for gravity-less:               if(playerMe_Ob.getVelocityY_Mth() > -Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //                playerMe_Ob.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth() - 1);
+            //            }
             playerMe_Ob.setVelocityX_Mth(0);
             playerMe_Ob.setVelocityY_Mth(-Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
         }
@@ -277,10 +254,10 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             {
                 playerMe_Input_ObsArrLst.add(playerInputCode);
             }
-//y for gravity-less:            playerMe_Ob.setVelocityY_Mth(+1);
-//            if(playerMe_Ob.getVelocityY_Mth() < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
-//                playerMe_Ob.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth() + 1);
-//            }
+            //y for gravity-less:            playerMe_Ob.setVelocityY_Mth(+1);
+            //            if(playerMe_Ob.getVelocityY_Mth() < Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX) {
+            //                playerMe_Ob.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth() + 1);
+            //            }
             playerMe_Ob.setVelocityX_Mth(0);
             playerMe_Ob.setVelocityY_Mth(+Game_Main_JFrame_Cl.SPRITE_VELOCITY_MAX);
         }
