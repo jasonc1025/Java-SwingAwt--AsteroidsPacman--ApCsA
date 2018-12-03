@@ -9,12 +9,15 @@ import java.net.URL;
 public class Sprite_Cl {
 	//y- protected Image image_Fld;
 	private Image image_Fld;
-	private int positionX_Fld;
-	private int positionY_Fld;
-	private int velocityX_Fld;
-	private int velocityY_Fld;
 	private int imageWidth_Fld;
 	private int imageHeight_Fld;
+
+	private int positionX_Fld;
+	private int positionY_Fld;
+
+	private int velocityX_Fld;
+	private int velocityY_Fld;
+
 	private boolean aiMode_Bool_Fld;
 
 	public Sprite_Cl()
@@ -48,7 +51,7 @@ public class Sprite_Cl {
 		setAiMode_Bool_Mth(aiModeBool_In);
 	}
 
-	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int weight_In, int height_In, int velocityX_In, int velocityY_In, boolean aiModeBool_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, int velocityX_In, int velocityY_In, boolean aiModeBool_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
@@ -58,7 +61,7 @@ public class Sprite_Cl {
 			//y- URL url = getClass().getResource("/images/ship.jpg");
 			URL url = getClass().getResource(imageFile_In);
 			setImage_Mth(ImageIO.read(url));
-			this.imageWidth_Fld = weight_In;
+			this.imageWidth_Fld = width_In;
 			this.imageHeight_Fld = height_In;
 		}
 		catch(Exception e)
