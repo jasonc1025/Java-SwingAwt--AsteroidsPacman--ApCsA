@@ -229,26 +229,47 @@ public class Sprite_Cl {
                 this.velocityY_Fld = this.velocity_Max_Fld;
             }
         }
+
         positionX_New += this.velocityX_Fld;
         positionY_New += this.velocityY_Fld;
 
         // * Check Boundaries: X
         //
-        if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
+        //       if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
+        //        {
+        //            setVelocityX_Mth(-getVelocityX_Mth());
+        //            // * remain at old position
+        //            positionX_New = getX_Mth();
+        //        }
+        // * Allow for boundary wrap-around
+        //
+        if( (positionX_New < 0) )
         {
-            setVelocityX_Mth(-getVelocityX_Mth());
-            // * remain at old position
-            positionX_New = getX_Mth();
+            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+        }
+        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+        {
+            positionX_New = 0;
         }
         setX_Mth(positionX_New);
 
         // * Check Boundaries: Y
         //
-        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
+        //        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
+        //        {
+        //            setVelocityY_Mth(-getVelocityY_Mth());
+        //            // * remain at old position
+        //            positionY_New = getY_Mth();
+        //        }
+        // * Allow for boundary wrap-around
+        //
+        if( (positionY_New < 0) )
         {
-            setVelocityY_Mth(-getVelocityY_Mth());
-            // * remain at old position
-            positionY_New = getY_Mth();
+            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+        }
+        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+        {
+            positionY_New = 0;
         }
         setY_Mth(positionY_New);
     }
@@ -281,24 +302,6 @@ public class Sprite_Cl {
         }
         setY_Mth(positionY_New);
     }
-
-    public void move(Game_Cycle_JPanel_Cl.Direction_Enum direction_Enum_In)
-	{
-		//o- if(direction_Enum_In.equals("LEFT"))
-		if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.LEFT)
-			setX_Mth(getX_Mth()-getVelocityX_Mth());
-			//o- else if(direction_Enum_In.equals("RIGHT"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
-			setX_Mth(getX_Mth()+getVelocityX_Mth());
-			//o- else if(direction_Enum_In.equals("UP"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
-			setY_Mth(getY_Mth()-getVelocityY_Mth());
-			//o- else if(direction_Enum_In.equals("DOWN"))
-		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
-			setY_Mth(getY_Mth()+getVelocityY_Mth());
-			//o- else if(direction_Enum_In.equals("SIDEWAYS_AND_DOWN"))
-	}
-
 
 	public boolean boundaryOk_PosX_Mth(int positionX_In, int spriteWidth_In)
     {

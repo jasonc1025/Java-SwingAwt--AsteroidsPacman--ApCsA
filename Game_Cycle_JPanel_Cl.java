@@ -1,3 +1,7 @@
+// IMPORTANT
+//
+// * Important that 'playerMe_Ob' has wrap-around at window-boundary or collision-detect may fail when cornering an object to cause many, repeated collisions
+
 // TODO
 //
 // * Better Sound
@@ -31,7 +35,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		UP, DOWN, LEFT, RIGHT, SIDEWAYS_AND_DOWN;
 	}
 
-	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,1,4);
+	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,1,2);
 
     //y- private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,(int)((Math.random()*3))-1,(int)((Math.random()*3))-1,true);
     private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,1,1);
@@ -57,25 +61,26 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
     public Game_Cycle_JPanel_Cl(JFrame jFrame_In)
 	{
-        int velocityX_New;
-        int velocityY_New;
+        int velocityRandomNew;
 
         setBackground(Color.black);
 		this.addKeyListener(this);
 		new Thread(this).start();
 		setVisible(true);
 
-        // * Random Range [-1, 1]
-		velocityX_New = randomRoll_Mth(3, 0, -1);
-        velocityY_New = randomRoll_Mth(3, 0, -1);
-        playerBot_Ob.setVelocityX_Mth(velocityX_New);
-        playerBot_Ob.setVelocityY_Mth(velocityY_New);
+        // * Use Do..While for Non-Zero: Random Range [-1, 1]
+        do {
+            velocityRandomNew = randomRoll_Mth(3, 0, -1);
+        } while ( velocityRandomNew == 0 );
+        playerBot_Ob.setVelocityX_Mth( velocityRandomNew );
+        playerBot_Ob.setVelocityY_Mth( velocityRandomNew );
 
-        // * Random Range [-1, 1]
-        velocityX_New = randomRoll_Mth(3, 0, -1);
-        velocityY_New = randomRoll_Mth(3, 0, -1);
-        playerFood_Ob.setVelocityX_Mth(velocityX_New);
-        playerFood_Ob.setVelocityY_Mth(velocityY_New);
+        // * Use Do..While for Non-Zero: Random Range [-1, 1]
+        do {
+            velocityRandomNew = randomRoll_Mth(3, 0, -1);
+           } while ( velocityRandomNew == 0 );
+        playerFood_Ob.setVelocityX_Mth( velocityRandomNew );
+        playerFood_Ob.setVelocityY_Mth( velocityRandomNew );
     }
 
 	// * Will be called from externally on periodic basis
@@ -126,25 +131,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         graphToBack.drawString( "> FPS: " + dfTemp.format(gameCycle_Fps_NanoSec), 50, 100 );
         //todo
         graphToBack.drawString( "> SCORE: " + dfTemp.format(Game_Main_JFrame_Cl.SCORE), 50, 150 );
-
-
-//o-         playerMe_Ob.move_Mth();
-//o-         if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_LEFT)) )
-//        {
-//            playerMe_Ob.move(Direction_Enum.LEFT);
-//        }
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_RIGHT)) )
-//        {
-//            playerMe_Ob.move(Direction_Enum.RIGHT);
-//        }
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_UP)) )
-//        {
-//            playerMe_Ob.move(Direction_Enum.UP);
-//        }
-//        if( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_DOWN)) )
-//        {
-//            playerMe_Ob.move(Direction_Enum.DOWN);
-//        }
 
         playerMe_Ob.move_Mth( playerMe_Input_ObsArrLst );
 
@@ -215,8 +201,37 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //        }
         // * Keep to keep things challenging
         if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
+            // * Reverse direction for each object involved for rebound-effect
+//            playerMe_Ob.setVelocityX_Mth( playerMe_Ob.getVelocityX_Mth() );
+//            playerMe_Ob.setVelocityY_Mth( playerMe_Ob.getVelocityY_Mth() );
+//            playerBot_Ob.setVelocityX_Mth( playerBot_Ob.getVelocityX_Mth() );
+//            playerBot_Ob.setVelocityY_Mth( playerBot_Ob.getVelocityY_Mth() );
+
+            // * Exchange velocities between objects for realistic rebound effect
+            //
+            int velocityTmpX = playerMe_Ob.getVelocityX_Mth();
+            int velocityTmpY = playerMe_Ob.getVelocityY_Mth();
+//            playerMe_Ob.setVelocityX_Mth( -2 * playerBot_Ob.getVelocityX_Mth() );
+//            playerMe_Ob.setVelocityY_Mth( -2 * playerBot_Ob.getVelocityY_Mth() );
+            playerMe_Ob.setVelocityX_Mth( playerBot_Ob.getVelocityX_Mth() );
+            playerMe_Ob.setVelocityY_Mth( playerBot_Ob.getVelocityY_Mth() );
+            playerBot_Ob.setVelocityX_Mth( velocityTmpX );
+            playerBot_Ob.setVelocityY_Mth( velocityTmpY );
             Game_Main_JFrame_Cl.SCORE--;
         }
+
+        if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
+            // * Exchange velocities between objects for realistic rebound effect
+            //
+            int velocityTmpX = playerMe_Ob.getVelocityX_Mth();
+            int velocityTmpY = playerMe_Ob.getVelocityY_Mth();
+            playerMe_Ob.setVelocityX_Mth( playerFood_Ob.getVelocityX_Mth() );
+            playerMe_Ob.setVelocityY_Mth( playerFood_Ob.getVelocityY_Mth() );
+            playerFood_Ob.setVelocityX_Mth( velocityTmpX );
+            playerFood_Ob.setVelocityY_Mth( velocityTmpY );
+            Game_Main_JFrame_Cl.SCORE++;
+        }
+
 
         twoDGraph.drawImage(back, null, 0, 0);
 		back = null;
