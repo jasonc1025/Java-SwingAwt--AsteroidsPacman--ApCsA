@@ -4,7 +4,9 @@
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.List;
 
 public class Sprite_Cl {
 	//y- protected Image image_Fld;
@@ -18,14 +20,15 @@ public class Sprite_Cl {
 	private int velocityX_Fld;
 	private int velocityY_Fld;
 
-	private boolean aiMode_Bool_Fld;
+	private int velocity_Step_Fld;
+	private int velocity_Max_Fld;
 
 	public Sprite_Cl()
 	{
-		this("/images/Circle-Green-20x20.png",0,0, 0, 0, true);
+		this("/images/Circle-Green-20x20.png",0,0, 0, 0);
 	}
 
-	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int velocityX_In, int velocityY_In, boolean aiModeBool_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int velocityStep_In, int velocityMax_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
@@ -45,13 +48,13 @@ public class Sprite_Cl {
 			//feel free to do something here
 		}
 		//		setSpeed(s);
-		velocityX_Fld = velocityX_In;
-		velocityY_Fld = velocityY_In;
-
-		setAiMode_Bool_Mth(aiModeBool_In);
+		velocityX_Fld = 0;
+		velocityY_Fld = 0;
+        velocity_Step_Fld = velocityStep_In;
+        velocity_Max_Fld = velocityMax_In;
 	}
 
-	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, int velocityX_In, int velocityY_In, boolean aiModeBool_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, int velocityStep_In, int velocityMax_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
@@ -69,9 +72,11 @@ public class Sprite_Cl {
 			//feel free to do something here
 		}
 		// setSpeed(s);
-		velocityX_Fld = velocityX_In;
-		velocityY_Fld = velocityY_In;
-        setAiMode_Bool_Mth(aiModeBool_In);
+		velocityX_Fld = 0;
+		velocityY_Fld = 0;
+
+		velocity_Step_Fld = velocityStep_In;
+		velocity_Max_Fld = velocityMax_In;
 	}
 
 	public void setPos_Mth(int x_In, int y_In)
@@ -163,52 +168,133 @@ public class Sprite_Cl {
 		return this.velocityY_Fld;
 	}
 
-	public void setAiMode_Bool_Mth(boolean aiMode_Bool_In)
+//	public void move_Mth()
+//	{
+//		int positionX_New = getX_Mth();
+//		int positionY_New = getY_Mth();
+//
+//		positionX_New += this.velocityX_Fld;
+//		positionY_New += this.velocityY_Fld;
+//
+//		// * Check Boundaries: X
+//		//
+//		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
+//		{
+//			setVelocityX_Mth(-getVelocityX_Mth());
+//			// * remain at old position
+//			positionX_New = getX_Mth();
+//		}
+//		setX_Mth(positionX_New);
+//
+//		// * Check Boundaries: Y
+//		//
+//		if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
+//		{
+//			setVelocityY_Mth(-getVelocityY_Mth());
+//			// * remain at old position
+//			positionY_New = getY_Mth();
+//		}
+//		setY_Mth(positionY_New);
+//	}
+
+    public void move_Mth( List<Integer> playerMe_Input_ObsArrLst_In )
     {
-        aiMode_Bool_Fld = aiMode_Bool_In;
-        return;
-    }
-    public boolean getAiMode_Bool()
-    {
-        return aiMode_Bool_Fld;
+        int positionX_New = getX_Mth();
+        int positionY_New = getY_Mth();
+
+        //TODO: CASE
+        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_LEFT))){
+            this.velocityX_Fld -= this.velocity_Step_Fld;
+            if( this.velocityX_Fld < -this.velocity_Max_Fld ){
+                this.velocityX_Fld = -this.velocity_Max_Fld;
+            }
+        }
+        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_RIGHT))){
+            this.velocityX_Fld += this.velocity_Step_Fld;
+            if( this.velocityX_Fld > this.velocity_Max_Fld ){
+                this.velocityX_Fld = this.velocity_Max_Fld;
+            }
+        }
+        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_UP))){
+            this.velocityY_Fld -= this.velocity_Step_Fld;
+            if( this.velocityY_Fld < -this.velocity_Max_Fld ){
+                this.velocityY_Fld = -this.velocity_Max_Fld;
+            }
+        }
+        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_DOWN))){
+            this.velocityY_Fld += this.velocity_Step_Fld;
+            if( this.velocityY_Fld > this.velocity_Max_Fld ){
+                this.velocityY_Fld = this.velocity_Max_Fld;
+            }
+        }
+        positionX_New += this.velocityX_Fld;
+        positionY_New += this.velocityY_Fld;
+
+        // * Check Boundaries: X
+        //
+        if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
+        {
+            setVelocityX_Mth(-getVelocityX_Mth());
+            // * remain at old position
+//            positionX_New = getX_Mth();
+        }
+        setX_Mth(positionX_New);
+
+        // * Check Boundaries: Y
+        //
+        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
+        {
+            setVelocityY_Mth(-getVelocityY_Mth());
+            // * remain at old position
+            positionY_New = getY_Mth();
+        }
+        setY_Mth(positionY_New);
     }
 
-	public void move_Mth()
+    public void move_Mth(  )
+    {
+        int positionX_New = getX_Mth();
+        int positionY_New = getY_Mth();
+
+        positionX_New += this.velocityX_Fld;
+        positionY_New += this.velocityY_Fld;
+
+        // * Check Boundaries: X
+        //
+        if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
+        {
+            setVelocityX_Mth(-getVelocityX_Mth());
+            // * remain at old position
+            positionX_New = getX_Mth();
+        }
+        setX_Mth(positionX_New);
+
+        // * Check Boundaries: Y
+        //
+        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
+        {
+            setVelocityY_Mth(-getVelocityY_Mth());
+            // * remain at old position
+            positionY_New = getY_Mth();
+        }
+        setY_Mth(positionY_New);
+    }
+
+    public void move(Game_Cycle_JPanel_Cl.Direction_Enum direction_Enum_In)
 	{
-		int positionX_New = getX_Mth();
-		int positionY_New = getY_Mth();
-
-		positionX_New += this.velocityX_Fld;
-		positionY_New += this.velocityY_Fld;
-
-		// * Check Boundaries: X
-		//
-		if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
-		{
-//			if(aiMode_Bool_Fld){
-				// * reverse speed
-				//				setSpeed(-getSpeed());
-				setVelocityX_Mth(-getVelocityX_Mth());
-//			}
-			// * remain at old position
-			positionX_New = getX_Mth();
-		}
-		setX_Mth(positionX_New);
-
-		// * Check Boundaries: Y
-		//
-		if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
-		{
-//			if(aiMode_Bool_Fld){
-				// * reverse speed
-				//                setSpeed(-getSpeed());
-				setVelocityY_Mth(-getVelocityY_Mth());
-//			}
-			// * remain at old position
-			positionY_New = getY_Mth();
-		}
-		setY_Mth(positionY_New);
-
+		//o- if(direction_Enum_In.equals("LEFT"))
+		if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.LEFT)
+			setX_Mth(getX_Mth()-getVelocityX_Mth());
+			//o- else if(direction_Enum_In.equals("RIGHT"))
+		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.RIGHT)
+			setX_Mth(getX_Mth()+getVelocityX_Mth());
+			//o- else if(direction_Enum_In.equals("UP"))
+		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.UP)
+			setY_Mth(getY_Mth()-getVelocityY_Mth());
+			//o- else if(direction_Enum_In.equals("DOWN"))
+		else if(direction_Enum_In == Game_Cycle_JPanel_Cl.Direction_Enum.DOWN)
+			setY_Mth(getY_Mth()+getVelocityY_Mth());
+			//o- else if(direction_Enum_In.equals("SIDEWAYS_AND_DOWN"))
 	}
 
 
