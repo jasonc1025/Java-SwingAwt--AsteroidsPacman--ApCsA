@@ -197,6 +197,8 @@ public class Sprite_Cl {
 //		setY_Mth(positionY_New);
 //	}
 
+    // * Encapsulate the heavy processing here based on 'playerMe_Input_ObsArrLst_In'
+    //  ** To shield outer-level the complexity of this algorithm
     public void move_Mth( List<Integer> playerMe_Input_ObsArrLst_In )
     {
         int positionX_New = getX_Mth();
@@ -236,7 +238,7 @@ public class Sprite_Cl {
         {
             setVelocityX_Mth(-getVelocityX_Mth());
             // * remain at old position
-//            positionX_New = getX_Mth();
+            positionX_New = getX_Mth();
         }
         setX_Mth(positionX_New);
 

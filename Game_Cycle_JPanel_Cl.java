@@ -1,6 +1,7 @@
 // TODO
 //
 // * Better Sound
+// * Missle Velocity if ship is 0
 
 
 //(c) A+ Computer Science
@@ -30,7 +31,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		UP, DOWN, LEFT, RIGHT, SIDEWAYS_AND_DOWN;
 	}
 
-	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,1,20);
+	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,1,4);
 
     //y- private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,(int)((Math.random()*3))-1,(int)((Math.random()*3))-1,true);
     private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,1,1);
@@ -153,7 +154,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         // ** '1.0' required for decimal division
         if( ( playerMe_Input_ObsArrLst.contains(Integer.valueOf(KeyEvent.VK_SPACE)) ) && ( gameCycle_Curr_NanoSec - gameCycle_Projectile_Prev_NanoSec > (1.0/gameCycle_Projectile_Per_Sec * Math.pow(10,9)) ) )
 		{
-            Sprite_Cl missileNew = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 4, 4);
+            Sprite_Cl missileNew = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0, 0);
             missileNew.setImageSize_Mth(10,10);
             missileNew.setPos_Mth(playerMe_Ob.getX_Mth()+ (playerMe_Ob.getWidth_Mth()/2)-(missileNew.getWidth_Mth()/2), playerMe_Ob.getY_Mth()+ (playerMe_Ob.getHeight_Mth()/2)-(missileNew.getHeight_Mth()/2));
             missileNew.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth()*2);
