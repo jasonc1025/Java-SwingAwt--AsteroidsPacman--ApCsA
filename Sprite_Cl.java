@@ -23,12 +23,10 @@ public class Sprite_Cl {
 	private double velocity_Step_Fld;
 	private double velocity_Max_Fld;
 
-    public int collisionDisabledCountdown_Fld;
-    public int collisionDisabledCountdown_Max_Fld;
+    private int collisionDisabledCountdown_Fld;
+    private int collisionDisabledCountdown_Max_Fld;
 
-    public boolean collisionCyclePrev_Bool_Fld;
-
-	public Sprite_Cl()
+    public Sprite_Cl()
 	{
 		this("/images/Circle-Green-20x20.png",0,0, 0, 0);
 	}
@@ -89,8 +87,7 @@ public class Sprite_Cl {
 
         collisionDisabledCountdown_Fld = 0;
         collisionDisabledCountdown_Max_Fld = collisionDisabledCountdownMax_In;
-        collisionCyclePrev_Bool_Fld = false;
-	}
+    }
 
 	public void setPos_Mth(double x_In, double y_In)
 	{
@@ -428,4 +425,19 @@ public class Sprite_Cl {
         return colliding_Boo;
     }
 
+    public int getCollisionDisabledCountdown_Mth() {
+        return collisionDisabledCountdown_Fld;
+    }
+
+    public void setCollisionDisabledCountdown_Mth(int collisionDisabledCountdown_Fld) {
+        this.collisionDisabledCountdown_Fld = collisionDisabledCountdown_Fld;
+    }
+
+    public int getCollisionDisabledCountdown_Max_Mth() {
+        return collisionDisabledCountdown_Max_Fld;
+    }
+
+    public void setCollisionDisabledCountdown_Max_Mth(int collisionDisabledCountdown_Max_Fld) {
+        this.collisionDisabledCountdown_Max_Fld = collisionDisabledCountdown_Max_Fld;
+    }
 }

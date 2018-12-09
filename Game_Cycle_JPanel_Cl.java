@@ -34,13 +34,15 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	{
 		UP, DOWN, LEFT, RIGHT, SIDEWAYS_AND_DOWN;
 	}
+    // * NonPlayerMe: collisionDisabledCountdownMax: 300 seems barely enough to pass through cleanly, 400 good, 500 seems too long
+    // * PlayerMe: collisionDisabledCountdownMax: 50 good, 100 seems safer
 
 	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,0.1,1, 100);
 
     //y- private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,(int)((Math.random()*3))-1,(int)((Math.random()*3))-1,true);
-    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,0.1,0.5, 100);
+    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,0.1,0.5, 300);
 
-	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,0.1,0.5, 100);
+	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,0.1,0.5, 300);
 
 	private ArrayList<Sprite_Cl> missiles_ObsLst = new ArrayList<Sprite_Cl>();
 
@@ -134,8 +136,6 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         //todo
         graphToBack.drawString( "> SCORE: " + dfTemp.format(Game_Main_JFrame_Cl.SCORE), 50, 150 );
 
-        playerMe_Ob.move_WithWrapAround_Mth( playerMe_Input_ObsArrLst );
-
         // * IMPORTANT: 1 sec = 1 x 10^9 nano-sec
         // * IMPORTANT: To avoid 'java: integer number too large' error, require 'l' for 64bit otherwise 32bit default
         // * Projectile at 1/10 sec frequency (or (1/10 * Math.pow(10,9)) nanosec)
@@ -174,17 +174,31 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		playerFood_Ob.move_WithWrapAround_Mth();
         playerFood_Ob.draw_Mth(graphToBack);
 
-		playerMe_Ob.draw_Mth(graphToBack);
-
 // y-        playerBot_Ob.move_WithWrapAround_Mth();
 // wraparound seems more safer:       playerBot_Ob.move_WithRebound_Mth();
         playerBot_Ob.move_WithWrapAround_Mth();
 		playerBot_Ob.draw_Mth(graphToBack);
 
 		// * Draw Collision Boxes
-        graphToBack.setColor( Color.WHITE );
+        if(playerMe_Ob.getCollisionDisabledCountdown_Mth() <=0) {
+            graphToBack.setColor(Color.WHITE);
+        }else{
+            graphToBack.setColor(Color.RED);
+        }
         graphToBack.drawRect( (int)Math.round(playerMe_Ob.getX_Mth()), (int)Math.round(playerMe_Ob.getY_Mth()), playerMe_Ob.getWidth_Mth(), playerMe_Ob.getHeight_Mth() );
+
+        if(playerBot_Ob.getCollisionDisabledCountdown_Mth() <=0) {
+            graphToBack.setColor(Color.WHITE);
+        }else{
+            graphToBack.setColor(Color.RED);
+        }
         graphToBack.drawRect( (int)Math.round(playerBot_Ob.getX_Mth()), (int)Math.round(playerBot_Ob.getY_Mth()), playerBot_Ob.getWidth_Mth(), playerBot_Ob.getHeight_Mth() );
+
+        if(playerFood_Ob.getCollisionDisabledCountdown_Mth() <=0) {
+            graphToBack.setColor(Color.WHITE);
+        }else{
+            graphToBack.setColor(Color.RED);
+        }
         graphToBack.drawRect( (int)Math.round(playerFood_Ob.getX_Mth()), (int)Math.round(playerFood_Ob.getY_Mth()), playerFood_Ob.getWidth_Mth(), playerFood_Ob.getHeight_Mth() );
 
         Iterator<Sprite_Cl> missiles_ObsLst_Iterator = missiles_ObsLst.iterator();
@@ -204,6 +218,10 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
         }
 
+        // * IMPORTANT
+        // * Easier to just reverse internal velocities vs. exchange velocities from other object.
+        // * Latter more complicated since need to normalize velcity vector to be less than its own max
+
         // * Comment out as too easy for scoring
 //        if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
 //            Game_Main_JFrame_Cl.SCORE++;
@@ -211,11 +229,12 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         // * Keep to keep things challenging
 //        if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
 //            if( playerMe_Ob.colliding_Mth(playerBot_Ob) && !playerBot_Ob.collisionCyclePrev_Bool_Fld){
-            if( playerMe_Ob.colliding_Mth(playerBot_Ob) && playerBot_Ob.collisionDisabledCountdown_Fld <= 0){
+            if( playerMe_Ob.colliding_Mth(playerBot_Ob) && playerBot_Ob.getCollisionDisabledCountdown_Mth() <= 0){
 
-            playerBot_Ob.collisionCyclePrev_Bool_Fld = true;
+//            playerBot_Ob.collisionCyclePrev_Bool_Fld = true;
 
             // * Only if moving in opposite directions (velocities)
+            // * Account also for zero velocities during conditional checking
             //
             if( (playerBot_Ob.getVelocityX_Mth() <= 0 && playerMe_Ob.getVelocityX_Mth() >= 0 ) ||
                 (playerBot_Ob.getVelocityX_Mth() >= 0 && playerMe_Ob.getVelocityX_Mth() <= 0 )
@@ -224,6 +243,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
                 playerBot_Ob.setVelocityX_Mth( -playerBot_Ob.getVelocityX_Mth() );
             }
             // * Only if moving in opposite directions (velocities)
+            // * Account also for zero velocities during conditional checking
             //
             if( (playerBot_Ob.getVelocityY_Mth() <= 0 && playerMe_Ob.getVelocityY_Mth() >= 0 ) ||
                     (playerBot_Ob.getVelocityY_Mth() >= 0 && playerMe_Ob.getVelocityY_Mth() <= 0 )
@@ -254,23 +274,24 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
 //y-            playerMe_Ob.collisionDisabledCountdown_Fld = 100; // was 200
 //            playerMe_Ob.collisionDisabledCountdown_Fld = 100; // was 200, 0 not work, 50 a little short
-            playerMe_Ob.collisionDisabledCountdown_Fld = playerMe_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
+            playerMe_Ob.setCollisionDisabledCountdown_Mth(playerMe_Ob.getCollisionDisabledCountdown_Max_Mth()); // was 200, 0 not work, 50 a little short
 
-            playerBot_Ob.collisionDisabledCountdown_Fld = playerBot_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
+            playerBot_Ob.setCollisionDisabledCountdown_Mth(playerBot_Ob.getCollisionDisabledCountdown_Max_Mth()); // was 200, 0 not work, 50 a little short
 
             Game_Main_JFrame_Cl.SCORE--;
         } else {
-            playerBot_Ob.collisionCyclePrev_Bool_Fld = false;
-            if(playerBot_Ob.collisionDisabledCountdown_Fld > 0){
-                playerBot_Ob.collisionDisabledCountdown_Fld--;
+//            playerBot_Ob.collisionCyclePrev_Bool_Fld = false;
+            if(playerBot_Ob.getCollisionDisabledCountdown_Mth() > 0){
+                playerBot_Ob.setCollisionDisabledCountdown_Mth(playerBot_Ob.getCollisionDisabledCountdown_Mth() - 1);
             }
         }
 
-        if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
+        if( playerMe_Ob.colliding_Mth(playerFood_Ob) && playerFood_Ob.getCollisionDisabledCountdown_Mth() <= 0 ){
             // * Only if moving in opposite directions (velocities)
+            // * Account also for zero velocities during conditional checking
             //
-            if( (playerFood_Ob.getVelocityX_Mth() < 0 && playerMe_Ob.getVelocityX_Mth() > 0 ) ||
-                    (playerFood_Ob.getVelocityX_Mth() > 0 && playerMe_Ob.getVelocityX_Mth() < 0 )
+            if( (playerFood_Ob.getVelocityX_Mth() <= 0 && playerMe_Ob.getVelocityX_Mth() >= 0 ) ||
+                    (playerFood_Ob.getVelocityX_Mth() >= 0 && playerMe_Ob.getVelocityX_Mth() <= 0 )
                     )
             {
                 playerFood_Ob.setVelocityX_Mth( -playerFood_Ob.getVelocityX_Mth() );
@@ -282,9 +303,10 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 
 
             // * Only if moving in opposite directions (velocities)
+            // * Account also for zero velocities during conditional checking
             //
-            if( (playerFood_Ob.getVelocityY_Mth() < 0 && playerMe_Ob.getVelocityY_Mth() > 0 ) ||
-                    (playerFood_Ob.getVelocityY_Mth() > 0 && playerMe_Ob.getVelocityY_Mth() < 0 )
+            if( (playerFood_Ob.getVelocityY_Mth() <= 0 && playerMe_Ob.getVelocityY_Mth() >= 0 ) ||
+                    (playerFood_Ob.getVelocityY_Mth() >= 0 && playerMe_Ob.getVelocityY_Mth() <= 0 )
                     )
             {
                 playerFood_Ob.setVelocityY_Mth( -playerFood_Ob.getVelocityY_Mth() );
@@ -305,10 +327,19 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //            playerMe_Ob.setVelocityY_Mth( playerFood_Ob.getVelocityY_Mth() );
 //            playerFood_Ob.setVelocityX_Mth( velocityTmpX );
 //            playerFood_Ob.setVelocityY_Mth( velocityTmpY );
-            playerMe_Ob.collisionDisabledCountdown_Fld = playerMe_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
+            playerMe_Ob.setCollisionDisabledCountdown_Mth(playerMe_Ob.getCollisionDisabledCountdown_Max_Mth()); // was 200, 0 not work, 50 a little short
+            playerFood_Ob.setCollisionDisabledCountdown_Mth(playerFood_Ob.getCollisionDisabledCountdown_Max_Mth()); // was 200, 0 not work, 50 a little short
             Game_Main_JFrame_Cl.SCORE++;
+        } else {
+//            playerBot_Ob.collisionCyclePrev_Bool_Fld = false;
+            if (playerFood_Ob.getCollisionDisabledCountdown_Mth() > 0) {
+                playerFood_Ob.setCollisionDisabledCountdown_Mth(playerFood_Ob.getCollisionDisabledCountdown_Mth() - 1);
+            }
         }
 
+        // * Try moving 'playerMe' last since moves 2 pixels/cycle and others only 1 pixel/cycle to minimize collision-snag
+        playerMe_Ob.move_WithWrapAround_Mth( playerMe_Input_ObsArrLst );
+        playerMe_Ob.draw_Mth(graphToBack);
 
         twoDGraph.drawImage(back, null, 0, 0);
 		back = null;
