@@ -23,7 +23,8 @@ public class Sprite_Cl {
 	private double velocity_Step_Fld;
 	private double velocity_Max_Fld;
 
-	public int disabledCountdown_Fld;
+    public int collisionDisabledCountdown_Fld;
+    public int collisionDisabledCountdown_Max_Fld;
 
 	public Sprite_Cl()
 	{
@@ -32,8 +33,10 @@ public class Sprite_Cl {
 
 	public Sprite_Cl(String imageFile_In, int x_In, int y_In, double velocityStep_In, double velocityMax_In)
 	{
-		positionX_Fld = x_In;
-		positionY_Fld = y_In;
+        this(imageFile_In, x_In, y_In,0,0, velocityStep_In, velocityMax_In,0);
+
+//		positionX_Fld = x_In;
+//		positionY_Fld = y_In;
 		//y- imageWidth_Fld = w;
 		//y- imageHeight_Fld = h;
 
@@ -50,15 +53,16 @@ public class Sprite_Cl {
 			//feel free to do something here
 		}
 		//		setSpeed(s);
-		velocityX_Fld = 0;
-		velocityY_Fld = 0;
-        velocity_Step_Fld = velocityStep_In;
-        velocity_Max_Fld = velocityMax_In;
+//		velocityX_Fld = 0;
+//		velocityY_Fld = 0;
+//        velocity_Step_Fld = velocityStep_In;
+//        velocity_Max_Fld = velocityMax_In;
+//
+//        collisionDisabledCountdown_Fld = 0;
+//        collisionDisabledCountdown_Max_Fld = 100;
+    }
 
-        disabledCountdown_Fld = 0;
-	}
-
-	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, double velocityStep_In, double velocityMax_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, double velocityStep_In, double velocityMax_In, int collisionDisabledCountdownMax_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
@@ -82,7 +86,8 @@ public class Sprite_Cl {
 		velocity_Step_Fld = velocityStep_In;
 		velocity_Max_Fld = velocityMax_In;
 
-        disabledCountdown_Fld = 0;
+        collisionDisabledCountdown_Fld = 0;
+        collisionDisabledCountdown_Max_Fld = collisionDisabledCountdownMax_In;
 	}
 
 	public void setPos_Mth(double x_In, double y_In)
@@ -218,8 +223,8 @@ public class Sprite_Cl {
         double positionX_New = getX_Mth();
         double positionY_New = getY_Mth();
 
-        if( this.disabledCountdown_Fld > 0){
-            this.disabledCountdown_Fld--;
+        if( this.collisionDisabledCountdown_Fld > 0){
+            this.collisionDisabledCountdown_Fld--;
         } else {
             //TODO: CASE
             if (playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_LEFT))) {
@@ -263,9 +268,11 @@ public class Sprite_Cl {
         //
         if( (positionX_New < 0) )
         {
-            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+//            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+            positionX_New = Game_Main_JFrame_Cl.WIDTH;
         }
-        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+//        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH )
         {
             positionX_New = 0;
         }
@@ -283,9 +290,11 @@ public class Sprite_Cl {
         //
         if( (positionY_New < 0) )
         {
-            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+//            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+            positionY_New = Game_Main_JFrame_Cl.HEIGHT;
         }
-        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+//        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT )
         {
             positionY_New = 0;
         }
@@ -312,9 +321,11 @@ public class Sprite_Cl {
         //
         if( (positionX_New < 0) )
         {
-            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+//            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+            positionX_New = Game_Main_JFrame_Cl.WIDTH;
         }
-        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+//        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH )
         {
             positionX_New = 0;
         }
@@ -332,9 +343,11 @@ public class Sprite_Cl {
         //
         if( (positionY_New < 0) )
         {
-            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+//            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+            positionY_New = Game_Main_JFrame_Cl.HEIGHT;
         }
-        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+//        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT )
         {
             positionY_New = 0;
         }

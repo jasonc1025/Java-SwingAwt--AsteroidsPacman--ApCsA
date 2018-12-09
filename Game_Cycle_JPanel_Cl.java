@@ -35,12 +35,12 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 		UP, DOWN, LEFT, RIGHT, SIDEWAYS_AND_DOWN;
 	}
 
-	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,0.1,1);
+	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,0.1,1, 100);
 
     //y- private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,(int)((Math.random()*3))-1,(int)((Math.random()*3))-1,true);
-    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,0.5,1);
+    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,0.1,0.5, 0);
 
-	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,1,1);
+	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,0.1,0.5, 0);
 
 	private ArrayList<Sprite_Cl> missiles_ObsLst = new ArrayList<Sprite_Cl>();
 
@@ -72,10 +72,8 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         do {
             velocityRandomNew = randomRoll_Mth(3, 0, -1);
         } while ( velocityRandomNew == 0 );
-//        playerBot_Ob.setVelocityX_Mth( velocityRandomNew );
-//        playerBot_Ob.setVelocityY_Mth( velocityRandomNew );
-        playerBot_Ob.setVelocityX_Mth( .5 );
-        playerBot_Ob.setVelocityY_Mth( .5 );
+        playerBot_Ob.setVelocityX_Mth( velocityRandomNew * playerBot_Ob.getVelocityMax_Mth() );
+        playerBot_Ob.setVelocityY_Mth( velocityRandomNew * playerBot_Ob.getVelocityMax_Mth() );
 //.5 better        playerBot_Ob.setVelocityX_Mth( 1 );
 //        playerBot_Ob.setVelocityY_Mth( 1 );
 
@@ -83,8 +81,8 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         do {
             velocityRandomNew = randomRoll_Mth(3, 0, -1);
            } while ( velocityRandomNew == 0 );
-        playerFood_Ob.setVelocityX_Mth( velocityRandomNew );
-        playerFood_Ob.setVelocityY_Mth( velocityRandomNew );
+        playerFood_Ob.setVelocityX_Mth( velocityRandomNew * playerFood_Ob.getVelocityMax_Mth() );
+        playerFood_Ob.setVelocityY_Mth( velocityRandomNew * playerFood_Ob.getVelocityMax_Mth() );
     }
 
 	// * Will be called from externally on periodic basis
@@ -147,8 +145,8 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
             Sprite_Cl missileNew = new Sprite_Cl("/images/Circle-Green-20x20.png", 0, 0, 0, 0);
             missileNew.setImageSize_Mth(10,10);
             missileNew.setPos_Mth(playerMe_Ob.getX_Mth()+ (playerMe_Ob.getWidth_Mth()/2)-(missileNew.getWidth_Mth()/2), playerMe_Ob.getY_Mth()+ (playerMe_Ob.getHeight_Mth()/2)-(missileNew.getHeight_Mth()/2));
-            missileNew.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth()*2);
-            missileNew.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth()*2);
+            missileNew.setVelocityX_Mth(playerMe_Ob.getVelocityX_Mth()*3);  // was 2, 3 since speed max is 1 for playerMe
+            missileNew.setVelocityY_Mth(playerMe_Ob.getVelocityY_Mth()*3);  // was 2, 3 since speed max is 1 for playerMe
             missiles_ObsLst.add(missileNew);
             gameCycle_Projectile_Prev_NanoSec = gameCycle_Curr_NanoSec;
 
@@ -207,15 +205,28 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //        }
         // * Keep to keep things challenging
         if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
-            // * Reverse direction for each object involved for rebound-effect
+            // * Only if moving in opposite directions (velocities)
+            //
+            if( (playerBot_Ob.getVelocityX_Mth() < 0 && playerMe_Ob.getVelocityX_Mth() > 0 ) ||
+                (playerBot_Ob.getVelocityX_Mth() > 0 && playerMe_Ob.getVelocityX_Mth() < 0 )
+              )
+            {
+                playerBot_Ob.setVelocityX_Mth( -playerBot_Ob.getVelocityX_Mth() );
+            }
+            // * Only if moving in opposite directions (velocities)
+            //
+            if( (playerBot_Ob.getVelocityY_Mth() < 0 && playerMe_Ob.getVelocityY_Mth() > 0 ) ||
+                    (playerBot_Ob.getVelocityY_Mth() > 0 && playerMe_Ob.getVelocityY_Mth() < 0 )
+                    )
+            {
+                playerBot_Ob.setVelocityY_Mth( -playerBot_Ob.getVelocityY_Mth() );
+            }
+            // * Reverse direction for rebound-effect
             playerMe_Ob.setVelocityX_Mth( -playerMe_Ob.getVelocityX_Mth() );
             playerMe_Ob.setVelocityY_Mth( -playerMe_Ob.getVelocityY_Mth() );
-            playerBot_Ob.setVelocityX_Mth( -playerBot_Ob.getVelocityX_Mth() );
-            playerBot_Ob.setVelocityY_Mth( -playerBot_Ob.getVelocityY_Mth() );
 
-            // * Exchange velocities between objects for realistic rebound effect
-            //
-
+//             * Exchange velocities between objects for realistic rebound effect
+//
 // n-           double velocityTmpX = playerMe_Ob.getVelocityX_Mth();
 //            if(Math.abs(velocityTmpX) > playerBot_Ob.getVelocityMax_Mth()){
 //                velocityTmpX = playerBot_Ob.getVelocityMax_Mth() * (velocityTmpX/Math.abs(velocityTmpX));
@@ -231,21 +242,52 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //            playerBot_Ob.setVelocityX_Mth( velocityTmpX );
 //            playerBot_Ob.setVelocityY_Mth( velocityTmpY );
 
-//y-            playerMe_Ob.disabledCountdown_Fld = 100; // was 200
-            playerMe_Ob.disabledCountdown_Fld = 50 ; // was 200, 0 not work
-
+//y-            playerMe_Ob.collisionDisabledCountdown_Fld = 100; // was 200
+//            playerMe_Ob.collisionDisabledCountdown_Fld = 100; // was 200, 0 not work, 50 a little short
+            playerMe_Ob.collisionDisabledCountdown_Fld = playerMe_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
             Game_Main_JFrame_Cl.SCORE--;
         }
 
         if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){
-            // * Exchange velocities between objects for realistic rebound effect
+            // * Only if moving in opposite directions (velocities)
             //
-            double velocityTmpX = playerMe_Ob.getVelocityX_Mth();
-            double velocityTmpY = playerMe_Ob.getVelocityY_Mth();
-            playerMe_Ob.setVelocityX_Mth( playerFood_Ob.getVelocityX_Mth() );
-            playerMe_Ob.setVelocityY_Mth( playerFood_Ob.getVelocityY_Mth() );
-            playerFood_Ob.setVelocityX_Mth( velocityTmpX );
-            playerFood_Ob.setVelocityY_Mth( velocityTmpY );
+            if( (playerFood_Ob.getVelocityX_Mth() < 0 && playerMe_Ob.getVelocityX_Mth() > 0 ) ||
+                    (playerFood_Ob.getVelocityX_Mth() > 0 && playerMe_Ob.getVelocityX_Mth() < 0 )
+                    )
+            {
+                playerFood_Ob.setVelocityX_Mth( -playerFood_Ob.getVelocityX_Mth() );
+            }
+// not needed:           else{
+////                playerFood_Ob.setVelocityX_Mth( playerMe_Ob.getVelocityX_Mth() * 0.5 );
+////                playerFood_Ob.setVelocityY_Mth( playerMe_Ob.getVelocityY_Mth() * 0.5 );
+//            }
+
+
+            // * Only if moving in opposite directions (velocities)
+            //
+            if( (playerFood_Ob.getVelocityY_Mth() < 0 && playerMe_Ob.getVelocityY_Mth() > 0 ) ||
+                    (playerFood_Ob.getVelocityY_Mth() > 0 && playerMe_Ob.getVelocityY_Mth() < 0 )
+                    )
+            {
+                playerFood_Ob.setVelocityY_Mth( -playerFood_Ob.getVelocityY_Mth() );
+            }
+// not needed:           else{
+////                playerFood_Ob.setVelocityY_Mth( playerMe_Ob.getVelocityY_Mth() * 0.5 );
+////                playerFood_Ob.setVelocityX_Mth( playerMe_Ob.getVelocityX_Mth() * 0.5 );
+//            }
+            // * Reverse direction for rebound-effect
+            playerMe_Ob.setVelocityX_Mth( -playerMe_Ob.getVelocityX_Mth() );
+            playerMe_Ob.setVelocityY_Mth( -playerMe_Ob.getVelocityY_Mth() );
+
+//            // * Exchange velocities between objects for realistic rebound effect
+//            //
+//            double velocityTmpX = playerMe_Ob.getVelocityX_Mth();
+//            double velocityTmpY = playerMe_Ob.getVelocityY_Mth();
+//            playerMe_Ob.setVelocityX_Mth( playerFood_Ob.getVelocityX_Mth() );
+//            playerMe_Ob.setVelocityY_Mth( playerFood_Ob.getVelocityY_Mth() );
+//            playerFood_Ob.setVelocityX_Mth( velocityTmpX );
+//            playerFood_Ob.setVelocityY_Mth( velocityTmpY );
+            playerMe_Ob.collisionDisabledCountdown_Fld = playerMe_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
             Game_Main_JFrame_Cl.SCORE++;
         }
 
