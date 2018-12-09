@@ -38,9 +38,9 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	private Sprite_Cl playerMe_Ob = new Sprite_Cl( "/images/CalvinHobbes-Saucer.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.70),100,100,0.1,1, 100);
 
     //y- private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,(int)((Math.random()*3))-1,(int)((Math.random()*3))-1,true);
-    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,0.1,0.5, 0);
+    private Sprite_Cl playerBot_Ob = new Sprite_Cl( "/images/ufo.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.30),100,100,0.1,0.5, 100);
 
-	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,0.1,0.5, 0);
+	private Sprite_Cl playerFood_Ob = new Sprite_Cl( "images/Circle-Green-20x20.png", (int)(Game_Main_JFrame_Cl.WIDTH * 0.50), (int)(Game_Main_JFrame_Cl.HEIGHT * 0.50),100,100,0.1,0.5, 100);
 
 	private ArrayList<Sprite_Cl> missiles_ObsLst = new ArrayList<Sprite_Cl>();
 
@@ -209,19 +209,24 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //            Game_Main_JFrame_Cl.SCORE++;
 //        }
         // * Keep to keep things challenging
-        if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
+//        if( playerMe_Ob.colliding_Mth(playerBot_Ob) ){
+//            if( playerMe_Ob.colliding_Mth(playerBot_Ob) && !playerBot_Ob.collisionCyclePrev_Bool_Fld){
+            if( playerMe_Ob.colliding_Mth(playerBot_Ob) && playerBot_Ob.collisionDisabledCountdown_Fld <= 0){
+
+            playerBot_Ob.collisionCyclePrev_Bool_Fld = true;
+
             // * Only if moving in opposite directions (velocities)
             //
-            if( (playerBot_Ob.getVelocityX_Mth() < 0 && playerMe_Ob.getVelocityX_Mth() > 0 ) ||
-                (playerBot_Ob.getVelocityX_Mth() > 0 && playerMe_Ob.getVelocityX_Mth() < 0 )
+            if( (playerBot_Ob.getVelocityX_Mth() <= 0 && playerMe_Ob.getVelocityX_Mth() >= 0 ) ||
+                (playerBot_Ob.getVelocityX_Mth() >= 0 && playerMe_Ob.getVelocityX_Mth() <= 0 )
               )
             {
                 playerBot_Ob.setVelocityX_Mth( -playerBot_Ob.getVelocityX_Mth() );
             }
             // * Only if moving in opposite directions (velocities)
             //
-            if( (playerBot_Ob.getVelocityY_Mth() < 0 && playerMe_Ob.getVelocityY_Mth() > 0 ) ||
-                    (playerBot_Ob.getVelocityY_Mth() > 0 && playerMe_Ob.getVelocityY_Mth() < 0 )
+            if( (playerBot_Ob.getVelocityY_Mth() <= 0 && playerMe_Ob.getVelocityY_Mth() >= 0 ) ||
+                    (playerBot_Ob.getVelocityY_Mth() >= 0 && playerMe_Ob.getVelocityY_Mth() <= 0 )
                     )
             {
                 playerBot_Ob.setVelocityY_Mth( -playerBot_Ob.getVelocityY_Mth() );
@@ -250,7 +255,15 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 //y-            playerMe_Ob.collisionDisabledCountdown_Fld = 100; // was 200
 //            playerMe_Ob.collisionDisabledCountdown_Fld = 100; // was 200, 0 not work, 50 a little short
             playerMe_Ob.collisionDisabledCountdown_Fld = playerMe_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
+
+            playerBot_Ob.collisionDisabledCountdown_Fld = playerBot_Ob.collisionDisabledCountdown_Max_Fld; // was 200, 0 not work, 50 a little short
+
             Game_Main_JFrame_Cl.SCORE--;
+        } else {
+            playerBot_Ob.collisionCyclePrev_Bool_Fld = false;
+            if(playerBot_Ob.collisionDisabledCountdown_Fld > 0){
+                playerBot_Ob.collisionDisabledCountdown_Fld--;
+            }
         }
 
         if( playerMe_Ob.colliding_Mth(playerFood_Ob) ){

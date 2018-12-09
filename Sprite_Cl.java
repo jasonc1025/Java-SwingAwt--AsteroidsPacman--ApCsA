@@ -26,14 +26,15 @@ public class Sprite_Cl {
     public int collisionDisabledCountdown_Fld;
     public int collisionDisabledCountdown_Max_Fld;
 
+    public boolean collisionCyclePrev_Bool_Fld;
+
 	public Sprite_Cl()
 	{
 		this("/images/Circle-Green-20x20.png",0,0, 0, 0);
 	}
 
 	public Sprite_Cl(String imageFile_In, int x_In, int y_In, double velocityStep_In, double velocityMax_In)
-	{
-        this(imageFile_In, x_In, y_In,0,0, velocityStep_In, velocityMax_In,0);
+	{ this(imageFile_In, x_In, y_In,0,0, velocityStep_In, velocityMax_In,0);
 
 //		positionX_Fld = x_In;
 //		positionY_Fld = y_In;
@@ -88,6 +89,7 @@ public class Sprite_Cl {
 
         collisionDisabledCountdown_Fld = 0;
         collisionDisabledCountdown_Max_Fld = collisionDisabledCountdownMax_In;
+        collisionCyclePrev_Bool_Fld = false;
 	}
 
 	public void setPos_Mth(double x_In, double y_In)
