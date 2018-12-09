@@ -225,7 +225,6 @@ public class Sprite_Cl {
         if( this.collisionDisabledCountdown_Fld > 0){
             this.collisionDisabledCountdown_Fld--;
         } else {
-            //TODO: CASE
             if (playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_LEFT))) {
                 this.velocityX_Fld -= this.velocity_Step_Fld;
                 if (this.velocityX_Fld < -this.velocity_Max_Fld) {
@@ -267,10 +266,10 @@ public class Sprite_Cl {
         //
         if( (positionX_New < 0) )
         {
-//            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+            //            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
             positionX_New = Game_Main_JFrame_Cl.WIDTH;
         }
-//        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+        //        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
         else if( positionX_New > Game_Main_JFrame_Cl.WIDTH )
         {
             positionX_New = 0;
@@ -289,10 +288,10 @@ public class Sprite_Cl {
         //
         if( (positionY_New < 0) )
         {
-//            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+            //            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
             positionY_New = Game_Main_JFrame_Cl.HEIGHT;
         }
-//        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+        //        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
         else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT )
         {
             positionY_New = 0;
@@ -320,10 +319,10 @@ public class Sprite_Cl {
         //
         if( (positionX_New < 0) )
         {
-//            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+            //            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
             positionX_New = Game_Main_JFrame_Cl.WIDTH;
         }
-//        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+        //        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
         else if( positionX_New > Game_Main_JFrame_Cl.WIDTH )
         {
             positionX_New = 0;
@@ -342,10 +341,10 @@ public class Sprite_Cl {
         //
         if( (positionY_New < 0) )
         {
-//            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+            //            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
             positionY_New = Game_Main_JFrame_Cl.HEIGHT;
         }
-//        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+            //        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
         else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT )
         {
             positionY_New = 0;
@@ -409,16 +408,16 @@ public class Sprite_Cl {
         if (
                 ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
                 ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
-// n-               ((this.getX_Mth() + this.getWidth_Mth() + 5 >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() + 5 >= spriteOther_In.getY_Mth())) &&
-//                        ((this.getX_Mth() - 5 <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() - 5 <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
+                // n-               ((this.getX_Mth() + this.getWidth_Mth() + 5 >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() + 5 >= spriteOther_In.getY_Mth())) &&
+                //                        ((this.getX_Mth() - 5 <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() - 5 <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
 
-// same-                (
-//        ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
-//                ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
-//                ) || (
-//            ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() >= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth())) &&
-//            ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() + this.getHeight_Mth() <= spriteOther_In.getY_Mth() ))
-//                )
+                // same-                (
+                //        ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
+                //                ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
+                //                ) || (
+                //            ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() >= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth())) &&
+                //            ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() + this.getHeight_Mth() <= spriteOther_In.getY_Mth() ))
+                //                )
             ){
             colliding_Boo = true;
         }
