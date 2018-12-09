@@ -53,7 +53,7 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
 	private long gameCycle_Prev_NanoSec = 0l;
 	private long gameCycle_Curr_NanoSec = 0l;
     private long gameCycle_Fps_NanoSec = 0l;
-    private long gameCycle_Projectile_Per_Sec = 10;
+    private long gameCycle_Projectile_Per_Sec = 5;  // 10 sometimes cause lag
     private double gameCycle_Period_Sec = 0.0;
     private long gameCycle_DelayFactor_MilliSec = 10; // 5msec too fast, 20msec kindof slow, 10msec seems right
 
@@ -181,6 +181,11 @@ public class Game_Cycle_JPanel_Cl extends JPanel implements KeyListener, Runnabl
         playerBot_Ob.move_WithWrapAround_Mth();
 		playerBot_Ob.draw_Mth(graphToBack);
 
+		// * Draw Collision Boxes
+        graphToBack.setColor( Color.WHITE );
+        graphToBack.drawRect( (int)Math.round(playerMe_Ob.getX_Mth()), (int)Math.round(playerMe_Ob.getY_Mth()), playerMe_Ob.getWidth_Mth(), playerMe_Ob.getHeight_Mth() );
+        graphToBack.drawRect( (int)Math.round(playerBot_Ob.getX_Mth()), (int)Math.round(playerBot_Ob.getY_Mth()), playerBot_Ob.getWidth_Mth(), playerBot_Ob.getHeight_Mth() );
+        graphToBack.drawRect( (int)Math.round(playerFood_Ob.getX_Mth()), (int)Math.round(playerFood_Ob.getY_Mth()), playerFood_Ob.getWidth_Mth(), playerFood_Ob.getHeight_Mth() );
 
         Iterator<Sprite_Cl> missiles_ObsLst_Iterator = missiles_ObsLst.iterator();
         while( missiles_ObsLst_Iterator.hasNext() ){
