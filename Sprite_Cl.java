@@ -14,21 +14,23 @@ public class Sprite_Cl {
 	private int imageWidth_Fld;
 	private int imageHeight_Fld;
 
-	private int positionX_Fld;
-	private int positionY_Fld;
+	private double positionX_Fld;
+	private double positionY_Fld;
 
-	private int velocityX_Fld;
-	private int velocityY_Fld;
+	private double velocityX_Fld;
+	private double velocityY_Fld;
 
-	private int velocity_Step_Fld;
-	private int velocity_Max_Fld;
+	private double velocity_Step_Fld;
+	private double velocity_Max_Fld;
+
+	public int disabledCountdown_Fld;
 
 	public Sprite_Cl()
 	{
 		this("/images/Circle-Green-20x20.png",0,0, 0, 0);
 	}
 
-	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int velocityStep_In, int velocityMax_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, double velocityStep_In, double velocityMax_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
@@ -52,9 +54,11 @@ public class Sprite_Cl {
 		velocityY_Fld = 0;
         velocity_Step_Fld = velocityStep_In;
         velocity_Max_Fld = velocityMax_In;
+
+        disabledCountdown_Fld = 0;
 	}
 
-	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, int velocityStep_In, int velocityMax_In)
+	public Sprite_Cl(String imageFile_In, int x_In, int y_In, int width_In, int height_In, double velocityStep_In, double velocityMax_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
@@ -77,34 +81,36 @@ public class Sprite_Cl {
 
 		velocity_Step_Fld = velocityStep_In;
 		velocity_Max_Fld = velocityMax_In;
+
+        disabledCountdown_Fld = 0;
 	}
 
-	public void setPos_Mth(int x_In, int y_In)
+	public void setPos_Mth(double x_In, double y_In)
 	{
 		positionX_Fld = x_In;
 		positionY_Fld = y_In;
 	}
 
-	public void setX_Mth(int x_In)
+	public void setX_Mth(double x_In)
 	{
 		if(x_In < 0){ x_In = 0; }
 		if(x_In > Game_Main_JFrame_Cl.WIDTH){ x_In = Game_Main_JFrame_Cl.WIDTH; }
 		positionX_Fld = x_In;
 	}
 
-	public void setY_Mth(int y_In)
+	public void setY_Mth(double y_In)
 	{
 		if(y_In < 0){ y_In = 0; }
 		if(y_In > Game_Main_JFrame_Cl.HEIGHT){ y_In = Game_Main_JFrame_Cl.HEIGHT; }
 		positionY_Fld = y_In;
 	}
 
-	public int getX_Mth()
+	public double getX_Mth()
 	{
 		return positionX_Fld;
 	}
 
-	public int getY_Mth()
+	public double getY_Mth()
 	{
 		return positionY_Fld;
 	}
@@ -133,7 +139,7 @@ public class Sprite_Cl {
 	//o- public void draw_Mth(Graphics window);
 	public void draw_Mth(Graphics window )
 	{
-		window.drawImage(getImage_Mth(), getX_Mth(), getY_Mth(), getWidth_Mth(), getHeight_Mth(),null);
+		window.drawImage(getImage_Mth(), (int)Math.round(getX_Mth()), (int)Math.round(getY_Mth()), getWidth_Mth(), getHeight_Mth(),null);
 	}
 
 	public String toString()
@@ -155,20 +161,28 @@ public class Sprite_Cl {
 		this.imageHeight_Fld = height_In;
 	}
 
-	public void setVelocityX_Mth(int velocityX_In){
+	public void setVelocityX_Mth(double velocityX_In){
 		this.velocityX_Fld = velocityX_In;
 	}
-	public void setVelocityY_Mth(int velocityY_In){
+	public void setVelocityY_Mth(double velocityY_In){
 		this.velocityY_Fld = velocityY_In;
 	}
-	public int getVelocityX_Mth(){
+	public double getVelocityX_Mth(){
 		return this.velocityX_Fld;
 	}
-	public int getVelocityY_Mth(){
+	public double getVelocityY_Mth(){
 		return this.velocityY_Fld;
 	}
 
-//	public void move_Mth()
+    public double getVelocityMax_Mth(){
+        return this.velocity_Max_Fld;
+    }
+    public double getVelocityStep_Mth(){
+        return this.velocity_Step_Fld;
+    }
+
+
+//	public void move_WithRebound_Mth()
 //	{
 //		int positionX_New = getX_Mth();
 //		int positionY_New = getY_Mth();
@@ -199,34 +213,38 @@ public class Sprite_Cl {
 
     // * Encapsulate the heavy processing here based on 'playerMe_Input_ObsArrLst_In'
     //  ** To shield outer-level the complexity of this algorithm
-    public void move_Mth( List<Integer> playerMe_Input_ObsArrLst_In )
+    public void move_WithWrapAround_Mth(List<Integer> playerMe_Input_ObsArrLst_In )
     {
-        int positionX_New = getX_Mth();
-        int positionY_New = getY_Mth();
+        double positionX_New = getX_Mth();
+        double positionY_New = getY_Mth();
 
-        //TODO: CASE
-        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_LEFT))){
-            this.velocityX_Fld -= this.velocity_Step_Fld;
-            if( this.velocityX_Fld < -this.velocity_Max_Fld ){
-                this.velocityX_Fld = -this.velocity_Max_Fld;
+        if( this.disabledCountdown_Fld > 0){
+            this.disabledCountdown_Fld--;
+        } else {
+            //TODO: CASE
+            if (playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_LEFT))) {
+                this.velocityX_Fld -= this.velocity_Step_Fld;
+                if (this.velocityX_Fld < -this.velocity_Max_Fld) {
+                    this.velocityX_Fld = -this.velocity_Max_Fld;
+                }
             }
-        }
-        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_RIGHT))){
-            this.velocityX_Fld += this.velocity_Step_Fld;
-            if( this.velocityX_Fld > this.velocity_Max_Fld ){
-                this.velocityX_Fld = this.velocity_Max_Fld;
+            if (playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_RIGHT))) {
+                this.velocityX_Fld += this.velocity_Step_Fld;
+                if (this.velocityX_Fld > this.velocity_Max_Fld) {
+                    this.velocityX_Fld = this.velocity_Max_Fld;
+                }
             }
-        }
-        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_UP))){
-            this.velocityY_Fld -= this.velocity_Step_Fld;
-            if( this.velocityY_Fld < -this.velocity_Max_Fld ){
-                this.velocityY_Fld = -this.velocity_Max_Fld;
+            if (playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_UP))) {
+                this.velocityY_Fld -= this.velocity_Step_Fld;
+                if (this.velocityY_Fld < -this.velocity_Max_Fld) {
+                    this.velocityY_Fld = -this.velocity_Max_Fld;
+                }
             }
-        }
-        if( playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_DOWN))){
-            this.velocityY_Fld += this.velocity_Step_Fld;
-            if( this.velocityY_Fld > this.velocity_Max_Fld ){
-                this.velocityY_Fld = this.velocity_Max_Fld;
+            if (playerMe_Input_ObsArrLst_In.contains(Integer.valueOf(KeyEvent.VK_DOWN))) {
+                this.velocityY_Fld += this.velocity_Step_Fld;
+                if (this.velocityY_Fld > this.velocity_Max_Fld) {
+                    this.velocityY_Fld = this.velocity_Max_Fld;
+                }
             }
         }
 
@@ -274,10 +292,59 @@ public class Sprite_Cl {
         setY_Mth(positionY_New);
     }
 
-    public void move_Mth(  )
+    public void move_WithWrapAround_Mth( )
     {
-        int positionX_New = getX_Mth();
-        int positionY_New = getY_Mth();
+        double positionX_New = getX_Mth();
+        double positionY_New = getY_Mth();
+
+        positionX_New += this.velocityX_Fld;
+        positionY_New += this.velocityY_Fld;
+
+        // * Check Boundaries: X
+        //
+        //       if (!boundaryOk_PosX_Mth(positionX_New, this.getWidth_Mth()))
+        //        {
+        //            setVelocityX_Mth(-getVelocityX_Mth());
+        //            // * remain at old position
+        //            positionX_New = getX_Mth();
+        //        }
+        // * Allow for boundary wrap-around
+        //
+        if( (positionX_New < 0) )
+        {
+            positionX_New = Game_Main_JFrame_Cl.WIDTH - this.imageWidth_Fld;
+        }
+        else if( positionX_New > Game_Main_JFrame_Cl.WIDTH -this.imageWidth_Fld )
+        {
+            positionX_New = 0;
+        }
+        setX_Mth(positionX_New);
+
+        // * Check Boundaries: Y
+        //
+        //        if (!boundaryOk_PosY_Mth(positionY_New, this.getHeight_Mth()))
+        //        {
+        //            setVelocityY_Mth(-getVelocityY_Mth());
+        //            // * remain at old position
+        //            positionY_New = getY_Mth();
+        //        }
+        // * Allow for boundary wrap-around
+        //
+        if( (positionY_New < 0) )
+        {
+            positionY_New = Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld;
+        }
+        else if( positionY_New > Game_Main_JFrame_Cl.HEIGHT - this.imageHeight_Fld )
+        {
+            positionY_New = 0;
+        }
+        setY_Mth(positionY_New);
+    }
+
+    public void move_WithRebound_Mth(  )
+    {
+        double positionX_New = getX_Mth();
+        double positionY_New = getY_Mth();
 
         positionX_New += this.velocityX_Fld;
         positionY_New += this.velocityY_Fld;
@@ -303,7 +370,7 @@ public class Sprite_Cl {
         setY_Mth(positionY_New);
     }
 
-	public boolean boundaryOk_PosX_Mth(int positionX_In, int spriteWidth_In)
+	public boolean boundaryOk_PosX_Mth(double positionX_In, int spriteWidth_In)
     {
         boolean boundaryOk_Bool = true;
 	    if( (positionX_In < 0) || (positionX_In > Game_Main_JFrame_Cl.WIDTH-spriteWidth_In) )
@@ -313,7 +380,7 @@ public class Sprite_Cl {
         return boundaryOk_Bool;
     }
 
-    public boolean boundaryOk_PosY_Mth(int positionY_In, int spriteHeigth_In)
+    public boolean boundaryOk_PosY_Mth(double positionY_In, int spriteHeigth_In)
     {
         boolean boundaryOk_Bool = true;
         if( (positionY_In < 0) || (positionY_In > Game_Main_JFrame_Cl.HEIGHT-spriteHeigth_In) )
@@ -328,9 +395,19 @@ public class Sprite_Cl {
         boolean colliding_Boo = false;  // * default to false
 
         if (
-             ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
-             ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
-           ){
+                ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
+                ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
+// n-               ((this.getX_Mth() + this.getWidth_Mth() + 5 >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() + 5 >= spriteOther_In.getY_Mth())) &&
+//                        ((this.getX_Mth() - 5 <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() - 5 <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
+
+// same-                (
+//        ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() + this.getHeight_Mth() >= spriteOther_In.getY_Mth())) &&
+//                ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() <= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth()))
+//                ) || (
+//            ((this.getX_Mth() + this.getWidth_Mth() >= spriteOther_In.getX_Mth()) && (this.getY_Mth() >= spriteOther_In.getY_Mth() + spriteOther_In.getHeight_Mth())) &&
+//            ((this.getX_Mth() <= spriteOther_In.getX_Mth() + spriteOther_In.getWidth_Mth()) && (this.getY_Mth() + this.getHeight_Mth() <= spriteOther_In.getY_Mth() ))
+//                )
+            ){
             colliding_Boo = true;
         }
         return colliding_Boo;
